@@ -1,0 +1,7 @@
+{
+  "scan_timestamp": "2025-11-11T17:40:02Z",
+  "managers_found": [],
+  "total_packages": 0,
+  "vulnerabilities": [],
+  "notes": "No dependency management files found. This is a documentation/research repository with no external package dependencies. Only uses Git, Bash/Shell, and Markdown."
+}
