@@ -1,0 +1,2 @@
+This file tests if hooks added mid-session take effect.
+If no hook triggers after creating this file, it confirms hooks are startup-only.
