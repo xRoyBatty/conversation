@@ -375,6 +375,7 @@ exit 0
 ✅ **Confirmed**: Exit 2 (blocking) hooks work identically in both environments
 ✅ **Confirmed**: `$CLAUDE_CODE_REMOTE="true"` in web, unset in CLI
 ✅ **Confirmed**: Teleport feature (`claude --teleport <session_id>`) moves web sessions to CLI
+✅ **Confirmed**: Web hook workflow requires merge-then-new-session for Claude-created hooks to activate
 
 #### Subagent Testing Results
 **Test session**: c8531714-109b-4121-acba-ca20ac3a5533
@@ -382,6 +383,13 @@ exit 0
 - **4 SubagentStop events logged**: Indicates nested subagent spawning
 - **Timing**: Plan agent took 5+ minutes, spawned internal subagents
 - **Stop hook cascade**: Each subagent created log files → Stop hook forced commits → Meta-cascade behavior
+
+**Test workflow (web environment)**:
+1. Session 011CV18XTCueKM6RQe6VpYJm created hooks in `.claude/` directory
+2. User merged branch to main
+3. New test session c8531714... pulled from main (hooks now present)
+4. Hooks loaded at session startup → all tests successful
+5. **Key insight**: Hooks created by Claude don't work in current session, must merge + restart
 
 ### Remaining Questions
 

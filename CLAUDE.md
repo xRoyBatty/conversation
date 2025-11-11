@@ -31,8 +31,14 @@ Today is 11th November, I'm a pro user.
 ### Session Management
 8. **Teleport Feature**: Web sessions can be moved to CLI with `claude --teleport <session_id>` but requires local repo checkout
 9. **Hook Loading**: Hooks load at session startup in both environments (mid-session changes require restart)
+10. **Web Hook Workflow**: If Claude creates hooks during a web session:
+    - Hooks won't work in current session (already started)
+    - User must merge branch to main (or select as base for new session)
+    - New web session pulls from updated base → hooks become active
+    - This is required because web sessions pull from a base branch at startup
 
 ### Practical Implications
 - **For web hooks**: Use exit 2 (blocking) OR exit 0 with file logging - stderr-only output is invisible
 - **For CLI hooks**: Both exit 0 (transcript) and exit 2 (blocking) are visible
 - **Cross-compatible hooks**: Write to log files AND stderr for universal compatibility
+- **Creating hooks in web**: Claude can create hooks, but user must merge and start new session for activation
