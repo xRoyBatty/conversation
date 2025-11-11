@@ -275,13 +275,113 @@ fi
 }
 ```
 
+### Web Environment Hook Patterns
+
+Since web environment has NO transcript mode, hooks must be designed differently:
+
+**Pattern 1: File logging for monitoring (exit 0)**
+```bash
+#!/bin/bash
+LOG_FILE="${CLAUDE_PROJECT_DIR:-.}/.claude/hook-activity.log"
+INPUT=$(cat)
+
+# Extract relevant data
+TOOL=$(echo "$INPUT" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data.get('tool_name', ''))" 2>/dev/null)
+
+# Log with timestamp
+echo "$(date -u '+%Y-%m-%d %H:%M:%S UTC') - $TOOL executed" >> "$LOG_FILE"
+
+exit 0  # Silent execution, check log file later
+```
+
+**Pattern 2: Blocking validation (exit 2)**
+```bash
+#!/bin/bash
+INPUT=$(cat)
+
+# Validate some condition
+if [ some_validation_fails ]; then
+  echo "Validation failed: specific reason here" >&2
+  exit 2  # Claude sees this and responds
+fi
+
+exit 0
+```
+
+**Pattern 3: Cross-compatible (works in both web and CLI)**
+```bash
+#!/bin/bash
+LOG_FILE="${CLAUDE_PROJECT_DIR:-.}/.claude/hooks.log"
+INPUT=$(cat)
+
+# Log to file (works everywhere)
+echo "$(date -u) - Hook fired" >> "$LOG_FILE"
+
+# Output to stderr (visible in CLI transcript, blocks in web if exit 2)
+echo "Hook feedback" >&2
+
+# Detect environment
+if [ "$CLAUDE_CODE_REMOTE" = "true" ]; then
+  # Web-specific logic
+  echo "Running in web" >> "$LOG_FILE"
+else
+  # CLI-specific logic
+  echo "Running in CLI" >> "$LOG_FILE"
+fi
+
+exit 0
+```
+
+**Pattern 4: SubagentStop validation with logging**
+```bash
+#!/bin/bash
+LOG_FILE="${CLAUDE_PROJECT_DIR:-.}/.claude/subagent-validation.log"
+INPUT=$(cat)
+
+SESSION_ID=$(echo "$INPUT" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data.get('session_id', ''))" 2>/dev/null)
+HOOK_ACTIVE=$(echo "$INPUT" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data.get('stop_hook_active', False))" 2>/dev/null)
+
+# Log every subagent completion
+echo "$(date -u) - SubagentStop: $SESSION_ID (hook_active=$HOOK_ACTIVE)" >> "$LOG_FILE"
+
+# Optional: Block if quality insufficient
+# if [ validation_fails ]; then
+#   echo "Subagent incomplete, search more locations" >&2
+#   exit 2
+# fi
+
+exit 0
+```
+
 ### Key Insights from Testing
 
+#### Stop Hook Behavior
 ✅ **Confirmed**: Stop hook triggers on response completion, not mid-response
 ✅ **Confirmed**: Hook execution is independent of Claude's awareness
 ✅ **Confirmed**: Creating files + continuing conversation = hook waits until response ends
 ✅ **Confirmed**: Matchers support full regex (Edit|Write works)
 ✅ **Confirmed**: Hooks can differentiate "uncommitted changes" vs "untracked files"
+
+#### Subagent Hook Behavior (Tested in Web Environment)
+✅ **Confirmed**: PreToolUse fires when main Claude spawns Task subagents
+✅ **Confirmed**: SubagentStop fires when ANY Task subagent completes
+✅ **Confirmed**: SubagentStop captures nested subagents (subagents spawned by subagents)
+✅ **Confirmed**: PostToolUse fires for file operations from both main Claude AND subagents
+✅ **Confirmed**: `stop_hook_active` flag correctly prevents infinite loops (all events showed False)
+
+#### Web vs CLI Environment
+✅ **Confirmed**: Web has NO transcript mode (Ctrl-R doesn't exist)
+✅ **Confirmed**: Exit 0 hooks execute silently in web - **require file logging** to verify
+✅ **Confirmed**: Exit 2 (blocking) hooks work identically in both environments
+✅ **Confirmed**: `$CLAUDE_CODE_REMOTE="true"` in web, unset in CLI
+✅ **Confirmed**: Teleport feature (`claude --teleport <session_id>`) moves web sessions to CLI
+
+#### Subagent Testing Results
+**Test session**: c8531714-109b-4121-acba-ca20ac3a5533
+- **2 Task spawns logged** (PreToolUse): Explore + Plan agents
+- **4 SubagentStop events logged**: Indicates nested subagent spawning
+- **Timing**: Plan agent took 5+ minutes, spawned internal subagents
+- **Stop hook cascade**: Each subagent created log files → Stop hook forced commits → Meta-cascade behavior
 
 ### Remaining Questions
 
@@ -289,6 +389,7 @@ fi
 - What's the exact input JSON schema for each MCP tool type?
 - Can prompt-based hooks be used with PreToolUse/PostToolUse effectively?
 - How does hook deduplication work with identical commands from different sources?
+- Why did Plan agent spawn multiple internal subagents when we only requested one?
 
 ## Promo Details
 - **Period**: Nov 4-18, 2025
