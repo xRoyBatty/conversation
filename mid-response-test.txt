@@ -1,0 +1,7 @@
+Testing whether stop hook triggers mid-response or only at completion.
+
+If the hook triggers during this response while I continue writing,
+we'll see the feedback appear before this sentence.
+
+If it only triggers at response end, the feedback will appear after
+I've finished my entire message.

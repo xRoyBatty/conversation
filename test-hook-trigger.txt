@@ -1,0 +1,5 @@
+This file tests whether the stop hook triggers based on response completion
+rather than based on what Claude says in the response.
+
+Created at: 2025-11-11
+Purpose: Verify hook triggering mechanism
