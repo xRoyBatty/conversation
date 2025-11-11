@@ -37,23 +37,47 @@
 - **Instructions**: Static text always in context that Claude interprets
 - **Key Difference**: Hooks = automated enforcement; Instructions = guidelines to follow
 
-### Hook Characteristics
+### Hook Characteristics (CONFIRMED via testing)
 - Not intelligent - just scripts that run
 - Output appears as if from user
 - Can block Claude's actions
-- Event-triggered (e.g., user-prompt-submit-hook)
+- **Trigger on system events**, not on Claude's statements
+- Execute at response lifecycle moments (not mid-response)
 
-### Hook Examples for Repo Control
-1. Pre-commit quality gates (linters, tests)
-2. Security scanners (detect secrets)
-3. Type checking enforcement
-4. Test coverage requirements
-5. Documentation sync reminders
+### Confirmed Hook Events
+1. **stop-hook** (tested: `~/.claude/stop-hook-git-check.sh`)
+   - Triggers: When Claude's response completes
+   - Timing: AFTER entire response, not mid-response
+   - Use case: Enforce repo cleanliness (commit untracked files)
+
+2. **user-prompt-submit-hook** (mentioned in instructions, not tested)
+   - Triggers: When user submits a message
+   - Timing: Before Claude sees the message
+
+### Deterministic Hook Behavior (Tested)
+- Creating files + continuing conversation = hook waits
+- Response completion (regardless of what Claude says) = hook triggers
+- Hook execution is independent of Claude's awareness or intent
+
+### Speculative Hook Types (NOT CONFIRMED)
+These would be useful but we don't know if they exist:
+- before-commit-hook
+- before-edit-hook / before-write-hook
+- after-tool-call-hook
+- on-error-hook
+
+### Hook Examples That Would Require Specific Events
+1. Pre-commit quality gates → needs before-commit or before-push hook
+2. Security scanners → needs before-commit hook
+3. Type checking enforcement → needs before-edit/write hook
+4. Test coverage requirements → needs before-commit hook
+5. Documentation sync reminders → needs before-commit hook
 
 ## Open Questions
 - Do hooks apply to Task subagents?
-- What hook events are available besides user-prompt-submit?
-- Can hooks be scoped to specific operations?
+- What hook events are available beyond stop-hook and user-prompt-submit-hook?
+- Can hooks be scoped to specific operations or tool calls?
+- Are there hooks for individual tool calls (Edit, Write, Bash, etc.)?
 
 ## Promo Details
 - **Period**: Nov 4-18, 2025
