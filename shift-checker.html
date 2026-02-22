@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Grafik Zmian 2+2+2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --shift1: #4CAF50;
+            --shift1-light: #81C784;
+            --shift2: #2196F3;
+            --shift2-light: #64B5F6;
+            --off: #9E9E9E;
+            --off-light: #BDBDBD;
+            --bg: #1a1a2e;
+            --card: #16213e;
+            --text: #eee;
+            --text-dim: #aaa;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 10px;
+            padding-bottom: 100px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.4rem;
+            padding: 15px 0;
+            background: linear-gradient(135deg, var(--shift1), var(--shift2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+        }
+
+        .legend-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .legend-dot.shift1 { background: var(--shift1); }
+        .legend-dot.shift2 { background: var(--shift2); }
+        .legend-dot.off { background: var(--off); }
+
+        .quick-check {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .quick-check h2 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--text-dim);
+        }
+
+        .date-input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .date-input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .result-box {
+            margin-top: 15px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            display: none;
+        }
+
+        .result-box.shift1 {
+            background: linear-gradient(135deg, var(--shift1), var(--shift1-light));
+        }
+
+        .result-box.shift2 {
+            background: linear-gradient(135deg, var(--shift2), var(--shift2-light));
+        }
+
+        .result-box.off {
+            background: linear-gradient(135deg, var(--off), var(--off-light));
+        }
+
+        .result-box .date-label {
+            font-size: 0.9rem;
+            font-weight: normal;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .year-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .year-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 20px;
+            background: var(--card);
+            color: var(--text);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .year-btn.active {
+            background: linear-gradient(135deg, var(--shift1), var(--shift2));
+        }
+
+        .calendar-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 10px;
+        }
+
+        .month-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 10px;
+        }
+
+        .month-name {
+            text-align: center;
+            font-weight: bold;
+            padding: 8px;
+            font-size: 1rem;
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            padding: 5px 0;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+        }
+
+        .day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            position: relative;
+        }
+
+        .day:active {
+            transform: scale(0.95);
+        }
+
+        .day.empty {
+            background: transparent;
+            cursor: default;
+        }
+
+        .day.shift1 {
+            background: var(--shift1);
+            color: white;
+        }
+
+        .day.shift2 {
+            background: var(--shift2);
+            color: white;
+        }
+
+        .day.off {
+            background: var(--off);
+            color: white;
+        }
+
+        .day.today {
+            box-shadow: 0 0 0 3px #FFD700;
+        }
+
+        .day.selected {
+            box-shadow: 0 0 0 3px #FF4081;
+        }
+
+        .selection-info {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            padding: 15px;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .selection-info.visible {
+            transform: translateY(0);
+        }
+
+        .selection-summary {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .selection-stat {
+            padding: 5px 15px;
+        }
+
+        .selection-stat .count {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .selection-stat .label {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .selection-stat.shift1 .count { color: var(--shift1); }
+        .selection-stat.shift2 .count { color: var(--shift2); }
+        .selection-stat.off .count { color: var(--off); }
+
+        .clear-btn {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: var(--text);
+            cursor: pointer;
+        }
+
+        .today-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--shift1), var(--shift2));
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .today-btn.hidden {
+            display: none;
+        }
+
+        @media (max-width: 400px) {
+            .day {
+                font-size: 0.75rem;
+            }
+            .legend {
+                gap: 10px;
+            }
+            .legend-item {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>📅 Grafik Zmian 2+2+2</h1>
+
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-dot shift1"></div>
+            <span>I zmiana</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot shift2"></div>
+            <span>II zmiana</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot off"></div>
+            <span>Wolne</span>
+        </div>
+    </div>
+
+    <div class="quick-check">
+        <h2>🔍 Szybkie sprawdzenie</h2>
+        <div class="date-input-row">
+            <input type="date" class="date-input" id="quickDate" min="2026-01-01" max="2027-12-31">
+        </div>
+        <div class="result-box" id="resultBox">
+            <div class="date-label" id="resultDate"></div>
+            <div id="resultText"></div>
+        </div>
+    </div>
+
+    <div class="year-nav">
+        <button class="year-btn active" data-year="2026">2026</button>
+        <button class="year-btn" data-year="2027">2027</button>
+    </div>
+
+    <div class="calendar-container" id="calendar"></div>
+
+    <div class="selection-info" id="selectionInfo">
+        <div class="selection-summary">
+            <div class="selection-stat shift1">
+                <div class="count" id="countShift1">0</div>
+                <div class="label">I zmiana</div>
+            </div>
+            <div class="selection-stat shift2">
+                <div class="count" id="countShift2">0</div>
+                <div class="label">II zmiana</div>
+            </div>
+            <div class="selection-stat off">
+                <div class="count" id="countOff">0</div>
+                <div class="label">Wolne</div>
+            </div>
+        </div>
+        <button class="clear-btn" id="clearSelection">Wyczyść zaznaczenie</button>
+    </div>
+
+    <button class="today-btn" id="todayBtn" title="Dzisiaj">📍</button>
+
+    <script>
+        // Reference date: January 5, 2026 is day 1 of cycle (first shift)
+        const REFERENCE_DATE = new Date(2026, 0, 5); // January 5, 2026
+
+        const MONTHS_PL = [
+            'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
+            'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'
+        ];
+
+        const WEEKDAYS_PL = ['Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'Sb', 'Nd'];
+
+        let currentYear = 2026;
+        let selectedDates = new Set();
+
+        // Calculate shift for a given date
+        function getShift(date) {
+            // Use UTC to avoid DST issues (March/October time changes)
+            const refUTC = Date.UTC(REFERENCE_DATE.getFullYear(), REFERENCE_DATE.getMonth(), REFERENCE_DATE.getDate());
+            const dateUTC = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+            const diffDays = Math.round((dateUTC - refUTC) / (1000 * 60 * 60 * 24));
+
+            // Handle negative days (before reference)
+            let cycleDay = ((diffDays % 6) + 6) % 6;
+
+            // Cycle: 0,1 = shift1, 2,3 = shift2, 4,5 = off
+            if (cycleDay < 2) return 'shift1';
+            if (cycleDay < 4) return 'shift2';
+            return 'off';
+        }
+
+        function getShiftName(shift) {
+            switch(shift) {
+                case 'shift1': return 'I ZMIANA';
+                case 'shift2': return 'II ZMIANA';
+                case 'off': return 'WOLNE';
+            }
+        }
+
+        function formatDate(date) {
+            const day = date.getDate();
+            const month = MONTHS_PL[date.getMonth()];
+            const year = date.getFullYear();
+            const weekday = WEEKDAYS_PL[(date.getDay() + 6) % 7];
+            return `${weekday}, ${day} ${month} ${year}`;
+        }
+
+        function isToday(date) {
+            const today = new Date();
+            return date.getDate() === today.getDate() &&
+                   date.getMonth() === today.getMonth() &&
+                   date.getFullYear() === today.getFullYear();
+        }
+
+        function renderCalendar(year) {
+            const container = document.getElementById('calendar');
+            container.innerHTML = '';
+
+            for (let month = 0; month < 12; month++) {
+                const monthCard = document.createElement('div');
+                monthCard.className = 'month-card';
+
+                const monthName = document.createElement('div');
+                monthName.className = 'month-name';
+                monthName.textContent = MONTHS_PL[month];
+                monthCard.appendChild(monthName);
+
+                const weekdays = document.createElement('div');
+                weekdays.className = 'weekdays';
+                WEEKDAYS_PL.forEach(day => {
+                    const d = document.createElement('div');
+                    d.textContent = day;
+                    weekdays.appendChild(d);
+                });
+                monthCard.appendChild(weekdays);
+
+                const daysGrid = document.createElement('div');
+                daysGrid.className = 'days-grid';
+
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+
+                // Monday = 0, Sunday = 6
+                let startDay = (firstDay.getDay() + 6) % 7;
+
+                // Empty cells before first day
+                for (let i = 0; i < startDay; i++) {
+                    const empty = document.createElement('div');
+                    empty.className = 'day empty';
+                    daysGrid.appendChild(empty);
+                }
+
+                // Days of month
+                for (let day = 1; day <= lastDay.getDate(); day++) {
+                    const date = new Date(year, month, day);
+                    const shift = getShift(date);
+                    const dateStr = date.toISOString().split('T')[0];
+
+                    const dayEl = document.createElement('div');
+                    dayEl.className = `day ${shift}`;
+                    dayEl.textContent = day;
+                    dayEl.dataset.date = dateStr;
+
+                    if (isToday(date)) {
+                        dayEl.classList.add('today');
+                    }
+
+                    if (selectedDates.has(dateStr)) {
+                        dayEl.classList.add('selected');
+                    }
+
+                    dayEl.addEventListener('click', () => toggleDate(dateStr, dayEl));
+
+                    daysGrid.appendChild(dayEl);
+                }
+
+                monthCard.appendChild(daysGrid);
+                container.appendChild(monthCard);
+            }
+        }
+
+        function toggleDate(dateStr, element) {
+            if (selectedDates.has(dateStr)) {
+                selectedDates.delete(dateStr);
+                element.classList.remove('selected');
+            } else {
+                selectedDates.add(dateStr);
+                element.classList.add('selected');
+            }
+            updateSelectionInfo();
+        }
+
+        function updateSelectionInfo() {
+            const info = document.getElementById('selectionInfo');
+            const todayBtn = document.getElementById('todayBtn');
+
+            if (selectedDates.size === 0) {
+                info.classList.remove('visible');
+                todayBtn.classList.remove('hidden');
+                return;
+            }
+
+            todayBtn.classList.add('hidden');
+
+            let shift1 = 0, shift2 = 0, off = 0;
+
+            selectedDates.forEach(dateStr => {
+                const [y, m, d] = dateStr.split('-').map(Number);
+                const date = new Date(y, m - 1, d);
+                const shift = getShift(date);
+
+                if (shift === 'shift1') shift1++;
+                else if (shift === 'shift2') shift2++;
+                else off++;
+            });
+
+            document.getElementById('countShift1').textContent = shift1;
+            document.getElementById('countShift2').textContent = shift2;
+            document.getElementById('countOff').textContent = off;
+
+            info.classList.add('visible');
+        }
+
+        function clearSelection() {
+            selectedDates.clear();
+            document.querySelectorAll('.day.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
+            updateSelectionInfo();
+        }
+
+        function checkQuickDate() {
+            const input = document.getElementById('quickDate');
+            const resultBox = document.getElementById('resultBox');
+            const resultDate = document.getElementById('resultDate');
+            const resultText = document.getElementById('resultText');
+
+            if (!input.value) {
+                resultBox.style.display = 'none';
+                return;
+            }
+
+            const [y, m, d] = input.value.split('-').map(Number);
+            const date = new Date(y, m - 1, d);
+            const shift = getShift(date);
+
+            resultBox.className = `result-box ${shift}`;
+            resultBox.style.display = 'block';
+            resultDate.textContent = formatDate(date);
+            resultText.textContent = getShiftName(shift);
+        }
+
+        function scrollToToday() {
+            const today = new Date();
+            const year = today.getFullYear();
+
+            if (year >= 2026 && year <= 2027) {
+                if (currentYear !== year) {
+                    currentYear = year;
+                    document.querySelectorAll('.year-btn').forEach(btn => {
+                        btn.classList.toggle('active', btn.dataset.year == year);
+                    });
+                    renderCalendar(year);
+                }
+
+                const todayEl = document.querySelector('.day.today');
+                if (todayEl) {
+                    todayEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        }
+
+        // Event listeners
+        document.querySelectorAll('.year-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentYear = parseInt(btn.dataset.year);
+                renderCalendar(currentYear);
+            });
+        });
+
+        document.getElementById('quickDate').addEventListener('change', checkQuickDate);
+        document.getElementById('clearSelection').addEventListener('click', clearSelection);
+        document.getElementById('todayBtn').addEventListener('click', scrollToToday);
+
+        // Initialize
+        renderCalendar(2026);
+
+        // Set quick date to today if in range
+        const today = new Date();
+        if (today.getFullYear() >= 2026 && today.getFullYear() <= 2027) {
+            document.getElementById('quickDate').value = today.toISOString().split('T')[0];
+            checkQuickDate();
+        }
+    </script>
+</body>
+</html>
