@@ -390,8 +390,10 @@
 
         // Calculate shift for a given date
         function getShift(date) {
-            const diffTime = date.getTime() - REFERENCE_DATE.getTime();
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            // Use UTC to avoid DST issues (March/October time changes)
+            const refUTC = Date.UTC(REFERENCE_DATE.getFullYear(), REFERENCE_DATE.getMonth(), REFERENCE_DATE.getDate());
+            const dateUTC = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+            const diffDays = Math.round((dateUTC - refUTC) / (1000 * 60 * 60 * 24));
 
             // Handle negative days (before reference)
             let cycleDay = ((diffDays % 6) + 6) % 6;
