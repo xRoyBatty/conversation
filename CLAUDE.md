@@ -1,44 +1,38 @@
-Engage in a dialogue with the user. He would like to understand the array of your skills in this environment - Claude Code on the web (promo) and differences compared to Claude Code CLI app. Do not browse web results as you will be suggested to think in a certain way, you are you and you know how to check what you yourself can do. The reason it's urgent is here, Anthropic's email:
-We're offering a limited-time promotion that gives Pro and Max users extra usage credits exclusively for Claude Code on the web and mobile. This is designed to help you explore the full power of parallel Claude Code sessions without worrying about your regular usage limits.
+Engage in a dialogue with the user. They want to understand what Claude can do in this environment (Claude Code on the web) and how it differs from the Claude Code CLI app, including how usage limits and promotions apply.
 
-Pro users receive $250 in credits
+Do not guess about billing or limits. Check what you can (web search, the user's screenshots, the session itself) and say what you could not verify. Web search and fetch are allowed; some hosts may be blocked by the environment's network policy.
 
-Max users receive $1,000 in credits
+Do not rely on a "today" date in this file. Use the date of the session.
 
-These credits are separate from your standard usage limits and can only be used for Claude Code on the web and mobile. They expire on November 18 at 11:59 PM PT. Your regular Claude usage limits remain unchanged.
+## Current state (updated 2026-10-04)
 
-Promotion dates: Tuesday, November 4, 2025 at 9:00 AM PT through Tuesday, November 18, 2025 at 11:59 PM PT.
+- **Promo in effect**: Pro users get $100 of cloud session credits (Max: $250). Claim by Oct 7; unused credit expires Nov 5, 8:59 AM GMT+1 (per the user's usage panel, which showed $97 of $100 left). Applies to cloud sessions only, not local CLI sessions.
+- **Separate announcement (unverified for Claude Code on the web)**: an @claudeai post says that for two weeks, work that follows after starting a design, deck, or doc in the Claude app uses 50% less of the usage limits. It says "Claude app"; whether Claude Code on the web counts is unknown. The post's start date is not known.
+- **Plan limits**: Pro has a session limit and a weekly all-models limit. The weekly bar showed 100% (reset Monday 4:00 PM) while cloud credits still remained, so cloud credits look like a separate budget.
+- **Expired**: the Nov 4-18, 2025 promo ($250 Pro / $1,000 Max) is over.
 
-This is a limited time offer. It is available for existing users and only available for new users while supplies last.
-Today is 11th November, I'm a pro user.
+## Web vs CLI
 
-## Confirmed Differences: Web vs CLI
+### Environment and execution
+1. **Execution context**: Web runs in an isolated sandbox with a fresh clone; CLI runs in the local terminal. Work must be committed and pushed or it is lost when the container is reclaimed.
+2. **Usage**: Web sessions draw on cloud session credits while a promo is active; CLI uses the normal plan limits.
+3. **Context window**: This session shows a 1M-token window. The 200k figure noted in Nov 2025 is outdated.
 
-### Environment & Execution
-1. **Execution Context**: Web operates in isolated sandboxed environment with automated branch creation; CLI works in local terminal
-2. **Usage Limits**: Web uses credit-based billing ($250 for Pro); CLI uses standard Pro message limits + 5-hour timeout
-3. **Context Window**: Both share 200k token limit
+### Hooks (tested Nov 2025, not re-tested since)
+4. **Transcript mode**: CLI has transcript mode (Ctrl-R) where exit 0 hook stdout appears; web has no transcript mode.
+5. **Hook visibility**:
+   - CLI: exit 0 hooks show output in transcript mode.
+   - Web: exit 0 hooks run silently, so log to a file to verify execution.
+   - Both: exit 2 (blocking) hooks feed stderr to Claude directly.
+6. **Hook execution**: Both environments ran hooks the same way (PreToolUse, PostToolUse, SubagentStop confirmed on web).
+7. **Environment detection**: `$CLAUDE_CODE_REMOTE` is `"true"` on web, unset in CLI.
 
-### Hooks System (TESTED & CONFIRMED)
-4. **Transcript Mode**: CLI has transcript mode (Ctrl-R) where exit 0 hook stdout appears; **Web has NO transcript mode**
-5. **Hook Visibility**:
-   - CLI: Exit 0 hooks show output in transcript mode
-   - Web: Exit 0 hooks execute silently - **require file logging to verify execution**
-   - Both: Exit 2 (blocking) hooks feed stderr to Claude directly
-6. **Hook Execution**: Both environments execute hooks identically (PreToolUse, PostToolUse, SubagentStop all confirmed working in web)
-7. **Environment Detection**: Use `$CLAUDE_CODE_REMOTE` env var - set to `"true"` in web, unset/empty in CLI
+### Session management
+8. **Teleport**: Web sessions can be moved to the CLI with `claude --teleport <session_id>`; requires a local repo checkout.
+9. **Hook loading**: Hooks load at session start in both environments; changes mid-session need a restart.
+10. **Web hook workflow**: Hooks created during a web session are inactive until merged to the base branch (or the branch is chosen as the base for a new session), because web sessions pull from the base branch at startup.
 
-### Session Management
-8. **Teleport Feature**: Web sessions can be moved to CLI with `claude --teleport <session_id>` but requires local repo checkout
-9. **Hook Loading**: Hooks load at session startup in both environments (mid-session changes require restart)
-10. **Web Hook Workflow**: If Claude creates hooks during a web session:
-    - Hooks won't work in current session (already started)
-    - User must merge branch to main (or select as base for new session)
-    - New web session pulls from updated base → hooks become active
-    - This is required because web sessions pull from a base branch at startup
-
-### Practical Implications
-- **For web hooks**: Use exit 2 (blocking) OR exit 0 with file logging - stderr-only output is invisible
-- **For CLI hooks**: Both exit 0 (transcript) and exit 2 (blocking) are visible
-- **Cross-compatible hooks**: Write to log files AND stderr for universal compatibility
-- **Creating hooks in web**: Claude can create hooks, but user must merge and start new session for activation
+### Practical implications
+- Web hooks: use exit 2 (blocking), or exit 0 with file logging. Stderr alone is invisible.
+- CLI hooks: exit 0 (transcript) and exit 2 (blocking) are both visible.
+- Cross-compatible hooks: write to a log file and to stderr.
