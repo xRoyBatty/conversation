@@ -7,7 +7,8 @@ Do not rely on a "today" date in this file. Use the date of the session.
 ## Current state (updated 2026-10-04)
 
 - **Promo in effect**: Pro users get $100 of cloud session credits (Max: $250). Claim by Oct 7; unused credit expires Nov 5, 8:59 AM GMT+1 (per the user's usage panel, which showed $97 of $100 left). Applies to cloud sessions only, not local CLI sessions.
-- **Separate announcement (unverified for Claude Code on the web)**: an @claudeai post says that for two weeks, work that follows after starting a design, deck, or doc in the Claude app uses 50% less of the usage limits. It says "Claude app"; whether Claude Code on the web counts is unknown. The post's start date is not known.
+- **Artifact usage promotion (official: support.claude.com article 17274727)**: Oct 1, 2026 11:00 AM PT to Oct 15, 2026 11:59 PM PT, Pro/Max/Team only. After Claude creates or edits an artifact (doc, slides, design) in a Claude chat, the next 10 messages use 50% less of the **five-hour session limit**. The **weekly limit is unchanged**. It does **not** apply to Claude Code (so not to this web session), the API, Slack, or usage credits. No action needed.
+- **Cloud credit terms (from news sites, not an official page I could open)**: individual Pro/Max subscribers active on Sep 23, 2026; claim via Anthropic's link or `/claim-credit` by Oct 7; credits apply automatically to cloud sessions and are separate from normal limits.
 - **Plan limits**: Pro has a session limit and a weekly all-models limit. The weekly bar showed 100% (reset Monday 4:00 PM) while cloud credits still remained, so cloud credits look like a separate budget.
 - **Expired**: the Nov 4-18, 2025 promo ($250 Pro / $1,000 Max) is over.
 
