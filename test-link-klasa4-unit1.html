@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Link kl. 4, Unit 1 – test krok po kroku</title>
+<style>
+:root{
+  --bg:#f4f6fb;--card:#fff;--ink:#1b2130;--muted:#566075;--line:#dde2ec;
+  --brand:#2f50c9;--brand-ink:#fff;--brand-bg:#e6ecff;
+  --help:#0b6f6a;--help-bg:#dff3f1;
+  --ok:#17692f;--ok-bg:#e3f5e8;
+  --bad:#a8231b;--bad-bg:#fdeceb;
+  --hint:#6b4f00;--hint-bg:#fff4d1;
+  --mark:#ffe58a;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#12151d;--card:#1b202c;--ink:#eef1f8;--muted:#a6b0c4;--line:#2d3445;
+  --brand:#8aa2ff;--brand-ink:#0d1330;--brand-bg:#232c55;
+  --help:#5fd6cd;--help-bg:#0f3230;
+  --ok:#78e097;--ok-bg:#12321d;
+  --bad:#ff9a90;--bad-bg:#3b1a18;
+  --hint:#ffd67a;--hint-bg:#37300f;
+  --mark:#6a5a12;
+}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px}
+.top-in{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.brand{font-weight:700;font-size:15px;white-space:nowrap}
+.bar{flex:1;height:10px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--brand);transition:width .3s}
+.count{font-size:14px;color:var(--muted);white-space:nowrap}
+.menu{font:inherit;font-size:14px;background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 10px;cursor:pointer}
+main{max-width:720px;margin:0 auto;padding:16px 16px 48px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;outline:none}
+h1{font-size:22px;line-height:1.3;margin:4px 0 12px}
+h2{font-size:18px;margin:20px 0 8px}
+p{margin:8px 0}
+.muted{color:var(--muted)}.small{font-size:15px}
+.tag{display:inline-block;font-size:14px;font-weight:700;padding:4px 12px;border-radius:99px;margin-bottom:8px}
+.tag.help{background:var(--help-bg);color:var(--help)}
+.tag.test{background:var(--brand-bg);color:var(--brand)}
+.ctx{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:12px 0}
+.ctx .lbl{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 0 4px}
+.sent{font-size:22px;line-height:1.8;margin:4px 0}
+.qline{font-size:20px;margin:12px 0 8px}
+.gap{display:inline-block;min-width:4.4em;border-bottom:3px solid var(--brand);text-align:center;padding:0 6px;font-weight:700;color:var(--ok)}
+.gap.later{color:var(--muted);border-bottom-style:dashed;border-color:var(--line)}
+.gap.cur{background:var(--brand-bg)}
+.gap.done{color:var(--ok);border-bottom-color:var(--ok)}
+.pic{display:flex;align-items:center;gap:14px;margin:6px 0 10px}
+.emo{font-size:64px;line-height:1}
+.read{position:relative;font-size:16.5px;line-height:1.6;max-height:300px;overflow:auto}
+.read p{margin:0 0 10px}
+.ev{border-radius:4px}
+[data-ev="1"] .ev[data-e="1"],[data-ev="2"] .ev[data-e="2"],[data-ev="3"] .ev[data-e="3"],[data-ev="4"] .ev[data-e="4"],[data-ev="5"] .ev[data-e="5"]{background:var(--mark)}
+.dlg p{margin:6px 0;font-size:18px}
+.who{display:inline-block;width:1.6em;font-weight:700;color:var(--brand)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--brand);color:var(--brand-ink);border:2px solid var(--brand);border-radius:12px;padding:12px 22px;font-weight:700;min-height:48px}
+.btn.sec{background:transparent;color:var(--brand)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.opts{margin:8px 0}
+.opt{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:10px 14px;margin:8px 0;min-height:52px}
+.opt .l{flex:none;width:30px;height:30px;border-radius:50%;background:var(--line);display:grid;place-items:center;font-weight:700;font-size:14px}
+.opt:hover:not(:disabled){border-color:var(--brand)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--muted)}
+.opt.wrong .t{text-decoration:line-through}
+.opt.right{border-color:var(--ok);background:var(--ok-bg)}
+.bank{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.chip{background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:8px 14px;font-size:19px;min-height:46px}
+.chip:hover:not(:disabled){border-color:var(--brand)}
+.chip.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--muted);text-decoration:line-through}
+.chip.right,.chip.ok{border-color:var(--ok);background:var(--ok-bg)}
+.chip.bad{border-color:var(--bad);background:var(--bad-bg)}
+.chip.static{border-style:dashed;cursor:default;min-height:0;padding:4px 10px;font-size:17px}
+.build{min-height:64px;border:2px dashed var(--line);border-radius:12px;padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.build:empty::before{content:"Dotykaj wyrazów poniżej po kolei";color:var(--muted);font-size:15px;padding:0 6px}
+.gi,.gs{font:inherit;font-weight:700;padding:4px 8px;border:2px solid var(--brand);border-radius:8px;background:var(--card);color:var(--ink);max-width:100%}
+.gi{width:11em}
+.gi.ok,.gs.ok{border-color:var(--ok);background:var(--ok-bg)}
+.gi.bad,.gs.bad{border-color:var(--bad);background:var(--bad-bg)}
+.gline{font-size:20px;line-height:2.3;margin:6px 0}
+.fb{margin-top:14px;padding:12px 14px;border-radius:12px;border-left:6px solid;font-size:17px}
+.fb.ok{background:var(--ok-bg);border-color:var(--ok)}
+.fb.bad{background:var(--bad-bg);border-color:var(--bad)}
+.fb.hint{background:var(--hint-bg);border-color:var(--hint)}
+.fb.info{background:var(--brand-bg);border-color:var(--brand)}
+.fb b.h{display:block;margin-bottom:2px}
+.plain{margin:8px 0;padding-left:22px}
+input.name{font:inherit;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);width:100%;max-width:340px}
+details{margin-top:18px}summary{cursor:pointer;color:var(--brand);font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}
+td.n{text-align:center;white-space:nowrap}
+textarea.rep{width:100%;min-height:150px;font:14px/1.4 ui-monospace,Menlo,Consolas,monospace;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px}
+.score{font-size:40px;font-weight:800;margin:4px 0}
+.rev{border-left:4px solid var(--help);padding:2px 0 2px 12px;margin:10px 0}
+@media (max-width:480px){body{font-size:17px}.card{padding:16px}.brand{display:none}.sent{font-size:20px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <span class="brand">Link kl. 4 · Unit 1</span>
+    <div class="bar" role="progressbar" aria-label="Postęp" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="barfill"></i></div>
+    <span class="count" id="count"></span>
+    <button class="menu" id="menu" type="button">Menu</button>
+  </div>
+</header>
+<main id="app"></main>
+
+<script>
+/* ===== Dane testu: Link dla klasy IV, Unit 1, Test A ===== */
+const BANK1=['angry','bored','excited','scared','sad'];
+const BANK8=['my','from','how','name',"what's"];
+
+/* Pytanie pomocnicze: poprawna odpowiedź jest wstawiana na zmieniającą się pozycję. */
+let dc=0;
+const D=(q,ok,bad,why)=>{const n=bad.length+1,p=(dc++*5+2)%n,o=bad.slice();o.splice(p,0,ok);return{q,opts:o,a:p,why}};
+const T=(...a)=>({k:'t',a});
+
+const READING=
+`<p class="muted small"><b>Rodzina Mateusza.</b> Mówi Mateusz.</p>
+<p><b>a</b> His name's Piotr and he's my mother's father. He's old – he's 87. He's clever, and he's very nice.</p>
+<p><b>b</b> His name's Adam and he's 12. He's short, but he can climb trees. <span class="ev" data-e="1">His parents are my aunt and uncle.</span></p>
+<p><b>c</b> Her name's Maja. She's 18 years old. She's tall and strong. She loves sport, and she can play basketball. <span class="ev" data-e="2">We have the same mother and father.</span></p>
+<p><b>d</b> Her name's Anna, and <span class="ev" data-e="3">she is my father's wife.</span> She's 45, and she's pretty. She's happy and never angry.</p>
+<p><b>e</b> His name's Alex, and he's quite young. He loves music, and he can play the guitar. <span class="ev" data-e="4">He's my mother's brother.</span></p>
+<p><b>f</b> Her name's Wera, and <span class="ev" data-e="5">she's my father's mother.</span> She loves animals. She isn't young, and she isn't very tall. She's very sleepy every day!</p>`;
+
+const DIALOG=[
+  ['A',`{1} your name?`],
+  ['B',`Nour. And yours?`],
+  ['A',`{2} name's Milena.`],
+  ['B',`That's a lovely {3}! Where are you {4}?`],
+  ['A',`Poland. And you?`],
+  ['B',`Amman, in Jordan. It's a beautiful city.`],
+  ['A',`I want to go there one day! Maybe after university.`],
+  ['B',`{5} old are you?`],
+  ['A',`20.`],
+  ['B',`You can go soon then!`]
+];
+const DIALOG_ANS={1:"what's",2:'my',3:'name',4:'from',5:'how'};
+const DIALOG_CAP={1:1,2:1,5:1};
+
+const SECTIONS=[
+/* ---------- Zadanie 1 ---------- */
+{num:1,name:'Vocabulary',instr:'Uzupełnij zdania właściwymi wyrazami określającymi emocje i samopoczucie.',note:'Na każdym rysunku ktoś czuje się inaczej. Dotknij słowa z ramki, które pasuje do rysunku. Słowo <b>hungry</b> jest już użyte w przykładzie.',ex:`🍎 <b>He's hungry.</b> (Chłopiec jest głodny.)`,items:[
+ {topic:'Emocje: angry (zły)',
+  diag:D(`Jak czuje się ta osoba? Powiedz po polsku.`,'jest zła (wściekła)',['jest smutna','jest głodna'],`Marszczy brwi, a z uszu leci para – tak rysuje się kogoś, kto jest <b>zły</b>. Po angielsku: <b>angry</b>.`),
+  main:{type:'choice',chips:true,pic:{e:'😠',d:'dziewczynka marszczy brwi, z jej uszu leci para'},stem:`She's ___.`,opts:BANK1,a:'angry',why:`<b>angry</b> = zły, wściekły. Na rysunku leci para z uszu, a brwi są ściągnięte.`}},
+ {topic:'Emocje: sad (smutny)',
+  diag:D(`Jak czuje się ta osoba? Powiedz po polsku.`,'jest smutna',['jest zła','jest przestraszona'],`Podpiera policzek, ma opuszczone kąciki ust i łzę – tak wygląda ktoś <b>smutny</b>. Po angielsku: <b>sad</b>.`),
+  main:{type:'choice',chips:true,pic:{e:'😢',d:'dziewczynka podpiera policzek, ma smutną minę i łzę'},stem:`She's ___.`,opts:BANK1,a:'sad',why:`<b>sad</b> = smutny. Na rysunku dziewczynka ma smutną minę i łzę.`}},
+ {topic:'Emocje: excited (podekscytowany)',
+  diag:D(`Jak czuje się ta osoba? Powiedz po polsku.`,'jest podekscytowana (bardzo się cieszy)',['jest znudzona','jest smutna'],`Szeroko otwarte oczy i usta oraz wykrzyknik – ktoś bardzo się cieszy, jest <b>podekscytowany</b>. Po angielsku: <b>excited</b>.`),
+  main:{type:'choice',chips:true,pic:{e:'🤩',d:'dziewczynka ma szeroko otwarte oczy i usta, obok jest wykrzyknik'},stem:`She's ___.`,opts:BANK1,a:'excited',why:`<b>excited</b> = podekscytowany. Na rysunku jest wykrzyknik, a oczy i usta są szeroko otwarte.`}},
+ {topic:'Emocje: bored (znudzony)',
+  diag:D(`Jak czuje się ta osoba? Powiedz po polsku.`,'jest znudzony',['jest przestraszony','jest zły'],`Patrzy w górę, a twarz nic nie wyraża – nic go nie interesuje. Jest <b>znudzony</b>. Po angielsku: <b>bored</b>.`),
+  main:{type:'choice',chips:true,pic:{e:'😑',d:'chłopiec patrzy w górę, a jego twarz nic nie wyraża'},stem:`He's ___.`,opts:BANK1,a:'bored',why:`<b>bored</b> = znudzony. Na rysunku chłopiec patrzy w górę i nic go nie interesuje.`}},
+ {topic:'Emocje: scared (przestraszony)',
+  diag:D(`Jak czuje się ta osoba? Powiedz po polsku.`,'jest przestraszony',['jest znudzony','jest głodny'],`Trzyma się za policzki i ma szeroko otwarte oczy i usta – tak wygląda ktoś <b>przestraszony</b>. Po angielsku: <b>scared</b>.`),
+  main:{type:'choice',chips:true,pic:{e:'😱',d:'chłopiec trzyma się za policzki, ma szeroko otwarte oczy i usta'},stem:`He's ___.`,opts:BANK1,a:'scared',why:`<b>scared</b> = przestraszony. Na rysunku chłopiec trzyma się za policzki i ma szeroko otwarte oczy.`}}
+]},
+/* ---------- Zadanie 2 ---------- */
+{num:2,name:'Vocabulary',instr:'Wybierz właściwą opcję.',note:'Rodzina po angielsku. Przy każdym zdaniu są dwie odpowiedzi. Dotknij tej, która pasuje.',ex:`I have six aunts and uncles, and ten <b>cousins</b>.`,items:[
+ {topic:'Rodzina: mother, wife',
+  diag:D(`Co znaczy <b>wife</b>?`,'żona',['mąż','siostra'],`<b>wife</b> = żona. <b>my father's wife</b> = żona mojego taty. (Mąż to <b>husband</b>.)`),
+  main:{type:'choice',stem:`My ___ is my father's wife.`,opts:['mother','cousin'],a:'mother',why:`<b>my father's wife</b> = żona mojego taty, czyli moja mama – <b>mother</b>. <b>cousin</b> to kuzyn lub kuzynka.`}},
+ {topic:'Rodzina: aunt, uncle; dopełniacz \'s',
+  diag:D(`Co znaczy <b>my mother's sister</b>?`,'siostra mojej mamy',['mama mojej siostry','siostra mojego taty'],`<b>'s</b> pokazuje, czyje to jest: <b>my mother's sister</b> = siostra mojej mamy.`),
+  main:{type:'choice',stem:`___ Ewa is my mother's sister.`,opts:['Aunt','Uncle'],a:'Aunt',why:`Siostra mamy to ciocia – <b>aunt</b>. <b>Uncle</b> to wujek (brat mamy lub taty).`}},
+ {topic:'Rodzina: grandfather, grandmother',
+  diag:D(`Co znaczy <b>grandfather</b>?`,'dziadek',['tata','wujek'],`<b>grandfather</b> = dziadek, <b>grandmother</b> = babcia. Razem to dziadkowie (<b>grandparents</b>).`),
+  main:{type:'choice',stem:`My ___ and grandmother met as small children.`,opts:['grandfather','father'],a:'grandfather',why:`Dziadek i babcia to małżeństwo, które poznało się jako dzieci: <b>grandfather</b> + grandmother. Tata (<b>father</b>) jest synem babci, a nie jej rówieśnikiem.`}},
+ {topic:'Rodzina: children, sister',
+  diag:D(`Co znaczy <b>children</b>?`,'dzieci',['rodzice','dziadkowie'],`<b>children</b> = dzieci (liczba mnoga od <b>child</b>). <b>My mother and father have three children</b> = Moja mama i tata mają troje dzieci.`),
+  main:{type:'choice',stem:`My mother and father have three children: me, my ___ and my brother.`,opts:['uncle','sister'],a:'sister',why:`Dzieci mamy i taty to rodzeństwo: ja, mój brat i moja siostra – <b>sister</b>. <b>Uncle</b> (wujek) to brat mamy lub taty, a nie ich dziecko.`}},
+ {topic:'Rodzina: brother, father; no brothers or sisters',
+  diag:D(`Co znaczy <b>no brothers or sisters</b>?`,'nie ma rodzeństwa',['ma dużo rodzeństwa','ma tylko braci'],`<b>no</b> = żadnych. <b>no brothers or sisters</b> = żadnych braci ani sióstr, czyli nie ma rodzeństwa.`),
+  main:{type:'choice',stem:`My ___ has no brothers or sisters.`,opts:['brother','father'],a:'father',why:`Mój brat (<b>brother</b>) ma rodzeństwo – mnie! Więc to musi być tata – <b>father</b>: on nie ma braci ani sióstr.`}}
+]},
+/* ---------- Zadanie 3 ---------- */
+{num:3,name:'Grammar',instr:'Uzupełnij zdania właściwymi zaimkami i czasownikiem be w formie twierdzącej.',note:`Wpisz zaimek i czasownik <b>be</b> razem (np. <b>He's</b>). Uwaga: w zdaniach 2 i 5 luka jest w <b>pierwszym</b> zdaniu – tam trzeba powiedzieć, że coś <b>nie</b> jest prawdą.`,ex:`It isn't Thursday. <b>It's</b> Friday.`,items:[
+ {topic:'Czasownik be: I am',
+  diag:D(`Które zdanie jest poprawne?`,`I'm Irish`,[`I is Irish`,`I are Irish`],`Czasownik <b>be</b>: <b>I am</b> (I'm), <b>you are</b>, <b>he / she / it is</b>, <b>we / you / they are</b>. Z „I” zawsze <b>am</b>: <b>I'm</b>.`),
+  main:{type:'gaps',parts:[`I'm not English. `,T(`I'm`,'I am','Im'),` Irish.`],hint:`Pierwsze zdanie mówi, kim <b>nie</b> jestem, a drugie – kim jestem. Z „I” używamy <b>am</b>, skrót: <b>I'm</b>.`,why:`<b>I'm not English. I'm Irish.</b> = Nie jestem Anglikiem. Jestem Irlandczykiem.`}},
+ {topic:'Czasownik be: przeczenie (she isn\'t)',
+  diag:D(`„She's my cousin” = Ona jest moją kuzynką. Co więc mówimy w pierwszym zdaniu o „my sister”?`,'że ona NIE jest moją siostrą',['że ona jest moją siostrą','że ona ma siostrę'],`Jest kuzynką, więc <b>nie</b> jest siostrą. Potrzebne jest przeczenie: <b>She isn't</b> (is not).`),
+  main:{type:'gaps',parts:[T(`She isn't`,'She is not',`She's not`,'She isnt'),` my sister. She's my cousin.`],hint:`Luka jest w pierwszym zdaniu: ona <b>nie</b> jest siostrą. Z „she” przeczenie to <b>isn't</b>.`,why:`<b>She isn't my sister. She's my cousin.</b> = Ona nie jest moją siostrą. Jest moją kuzynką.`}},
+ {topic:'Czasownik be: they are',
+  diag:D(`Które pasuje do <b>they</b> w zdaniu twierdzącym?`,`They're`,[`They's`,`They am`],`<b>they</b> → <b>are</b>. Skrót: <b>they're</b> (they are). <b>They're happy.</b> = Oni są szczęśliwi.`),
+  main:{type:'gaps',parts:[`They aren't sad. `,T(`They're`,'They are','Theyre'),` happy.`],hint:`Pierwsze zdanie: nie są smutni. Drugie: są szczęśliwi. Z „they” używamy <b>are</b>, skrót: <b>they're</b>.`,why:`<b>They aren't sad. They're happy.</b> = Oni nie są smutni. Są szczęśliwi.`}},
+ {topic:'Czasownik be: he is',
+  diag:D(`Które pasuje do <b>he</b> w zdaniu twierdzącym?`,`He's`,[`He're`,`He am`],`<b>he / she / it</b> → <b>is</b>. Skrót: <b>he's</b> (he is). <b>He's young.</b> = On jest młody.`),
+  main:{type:'gaps',parts:[`He isn't old. `,T(`He's`,'He is','Hes'),` young.`],hint:`Z „he” używamy <b>is</b>, skrót: <b>he's</b>.`,why:`<b>He isn't old. He's young.</b> = On nie jest stary. Jest młody.`}},
+ {topic:'Czasownik be: przeczenie (we aren\'t)',
+  diag:D(`„We're hot” = Jest nam gorąco. Pierwsze zdanie mówi coś przeciwnego. Jak powiedzieć „nie jest nam” z <b>we</b>?`,`We aren't`,[`We isn't`,`We not`],`Przeczenie z <b>we / you / they</b>: <b>aren't</b> (are not). <b>isn't</b> jest tylko dla he / she / it.`),
+  main:{type:'gaps',parts:[T(`We aren't`,'We are not',`We're not`,'We arent'),` cold. We're hot.`],hint:`Luka jest w pierwszym zdaniu: nie jest nam zimno. Z „we” przeczenie to <b>aren't</b>.`,why:`<b>We aren't cold. We're hot.</b> = Nie jest nam zimno. Jest nam gorąco.`}}
+]},
+/* ---------- Zadanie 4 ---------- */
+{num:4,name:'Grammar',instr:'Z podanych wyrazów i wyrażeń ułóż zdania z czasownikiem be w formie przeczącej.',note:'Dotykaj kawałków zdania po kolei. Dotknięty kawałek w zdaniu wraca na dół, jeśli go dotkniesz jeszcze raz.',ex:`allowed to / You aren't / do that → <b>You aren't allowed to do that.</b>`,items:[
+ {topic:'Przeczenie z be: be + not + przymiotnik',
+  diag:D(`Które zdanie jest poprawne?`,`I'm not sad`,[`I'm sad not`,`Not I'm sad`],`Przeczenie z <b>be</b>: <b>be + not</b> + reszta: <b>I'm not sad</b>. Słowo „not” stoi zaraz po <b>am / is / are</b>.`),
+  main:{type:'order',words:[`I'm not`,'about it','sad'],ans:[`I'm not`,'sad','about it'],hint:`Zacznij od <b>I'm not</b>. Potem: jaki jestem? <b>sad</b>. Na końcu: z powodu czego? <b>about it</b>.`,why:`<b>I'm not</b> (nie jestem) + <b>sad</b> (smutny) + <b>about it</b> (z tego powodu). Całość: <b>I'm not sad about it.</b>`}},
+ {topic:'Przeczenie z be: isn\'t = is not',
+  diag:D(`Skrót <b>isn't</b> znaczy:`,'is not',['is nothing','it is'],`<b>isn't</b> = <b>is not</b>. Używamy go z <b>he / she / it</b>: <b>She isn't</b> = Ona nie jest.`),
+  main:{type:'order',words:['well','feeling',`She isn't`],ans:[`She isn't`,'feeling','well'],hint:`Zacznij od <b>She isn't</b>. Potem: co ona (nie) robi? <b>feeling</b>. Na końcu <b>well</b>.`,why:`<b>She isn't feeling well.</b> = Ona nie czuje się dobrze. <b>feeling well</b> = czuć się dobrze.`}},
+ {topic:'Słownictwo: sure (pewny)',
+  diag:D(`Co znaczy <b>sure</b> w zdaniu <b>He isn't sure</b>?`,'pewien',['smutny','głodny'],`<b>sure</b> = pewny. <b>He isn't sure</b> = On nie jest pewien. <b>sure where to go</b> = pewien, dokąd iść.`),
+  main:{type:'order',words:[`He isn't`,'to go','sure where'],ans:[`He isn't`,'sure where','to go'],hint:`Zacznij od <b>He isn't</b>. Potem <b>sure where</b> (pewien, dokąd). Na końcu <b>to go</b>.`,why:`<b>He isn't</b> (nie jest) + <b>sure where</b> (pewien, dokąd) + <b>to go</b> (iść). <b>He isn't sure where to go.</b>`}},
+ {topic:'Przeczenie z be: aren\'t = are not',
+  diag:D(`Skrót <b>aren't</b> znaczy:`,'are not',['am not','is not'],`<b>aren't</b> = <b>are not</b>. Używamy go z <b>we / you / they</b>: <b>They aren't</b> = Oni nie są.`),
+  main:{type:'order',words:['They','on holiday',`aren't going`],ans:['They',`aren't going`,'on holiday'],hint:`Zacznij od <b>They</b>. Zaraz po nim: <b>aren't going</b>. Na końcu: gdzie? <b>on holiday</b>.`,why:`<b>They</b> + <b>aren't going</b> (nie jadą) + <b>on holiday</b> (na wakacje). <b>They aren't going on holiday.</b>`}},
+ {topic:'Słownictwo: what to do (co robić)',
+  diag:D(`Co znaczy <b>what to do</b>?`,'co robić (co zrobić)',['gdzie iść','kto to zrobił'],`<b>what to do</b> = co robić, co zrobić. <b>We aren't sure what to do.</b> = Nie jesteśmy pewni, co robić.`),
+  main:{type:'order',words:['what','to do','sure',`We aren't`],ans:[`We aren't`,'sure','what','to do'],hint:`Zacznij od <b>We aren't</b>. Potem <b>sure</b>. Na końcu <b>what to do</b>.`,why:`<b>We aren't</b> + <b>sure</b> (pewni) + <b>what to do</b> (co robić). <b>We aren't sure what to do.</b>`}}
+]},
+/* ---------- Zadanie 5 ---------- */
+{num:5,name:'Grammar',instr:'Z podanych wyrazów i wyrażeń ułóż pytania z czasownikiem be.',note:'Wpisz całe pytanie (znak ? jest już dopisany). W pytaniu <b>am / is / are</b> stoi na początku.',ex:`you / sad → <b>Are you sad?</b>`,items:[
+ {topic:'Pytanie z be: Is (he / she / it)',
+  diag:D(`Które słowo pasuje do <b>Mr Harris</b> (on) w pytaniu: <b>… Mr Harris nice?</b>`,'Is',['Are','Am'],`<b>Mr Harris</b> = he → <b>is</b>. W pytaniu <b>be</b> idzie na początek: <b>Is Mr Harris nice?</b>`),
+  main:{type:'gaps',parts:['Mr Harris / nice  ',T('Is Mr Harris nice','Is Mr. Harris nice'),'?'],hint:`Pytanie zaczyna się od <b>Is</b>. Potem <b>Mr Harris</b>, potem <b>nice</b>.`,why:`<b>Is Mr Harris nice?</b> = Czy pan Harris jest miły? (Mr Harris = he → is.)`}},
+ {topic:'Pytanie z be: Are you; thirsty',
+  diag:D(`Co znaczy <b>thirsty</b>?`,'spragniony',['głodny','zmęczony'],`<b>thirsty</b> = spragniony (chce się pić). <b>hungry</b> = głodny.`),
+  main:{type:'gaps',parts:['you / thirsty  ',T('Are you thirsty'),'?'],hint:`Z „you” pytanie zaczyna się od <b>Are</b>. Potem <b>you</b>, potem <b>thirsty</b>.`,why:`<b>Are you thirsty?</b> = Czy jesteś spragniony? Z „you” używamy <b>are</b>.`}},
+ {topic:'Pytanie z be: Am I',
+  diag:D(`Jak zaczynamy pytanie z <b>I</b>?`,'Am I …?',['Is I …?','Are I …?'],`Z „I” używamy <b>am</b>. W pytaniu stoi na początku: <b>Am I late?</b> = Czy jestem spóźniony?`),
+  main:{type:'gaps',parts:['I / late  ',T('Am I late'),'?'],hint:`Pytanie z „I” zaczyna się od <b>Am</b>.`,why:`<b>Am I late?</b> = Czy się spóźniłem? <b>late</b> = spóźniony.`}},
+ {topic:'Pytanie z be: Are we',
+  diag:D(`Które słowo pasuje do <b>we</b> w pytaniu: <b>… we 12?</b>`,'Are',['Is','Am'],`<b>we / you / they</b> → <b>are</b>. <b>Are we 12?</b> = Czy mamy 12 lat?`),
+  main:{type:'gaps',parts:['we / 12  ',T('Are we 12','Are we twelve'),'?'],hint:`Z „we” pytanie zaczyna się od <b>Are</b>. Potem <b>we</b>, potem <b>12</b>.`,why:`<b>Are we 12?</b> = Czy mamy 12 lat? Wiek mówimy z <b>be</b>: <b>I'm 12</b>.`}},
+ {topic:'Pytanie z be: Is your sister; tall',
+  diag:D(`Co znaczy <b>tall</b>?`,'wysoki',['niski','stary'],`<b>tall</b> = wysoki. <b>short</b> = niski.`),
+  main:{type:'gaps',parts:['your sister / tall  ',T('Is your sister tall'),'?'],hint:`<b>your sister</b> = she, więc pytanie zaczyna się od <b>Is</b>.`,why:`<b>Is your sister tall?</b> = Czy twoja siostra jest wysoka? (your sister = she → is)`}}
+]},
+/* ---------- Zadanie 6 ---------- */
+{num:6,name:'Reading',instr:'Przeczytaj tekst o rodzinie Mateusza. Następnie uzupełnij zdania nazwami członków rodziny.',note:'Pod tekstem jest zdanie do uzupełnienia i trzy odpowiedzi. Wybierz tę, która zgadza się z tekstem. Jeśli się pomylisz, w tekście podświetli się miejsce z odpowiedzią.',ex:`Piotr is Mateusz's <b>grandfather</b>. (W tekście: „he's my mother's father”.)`,items:[
+ {topic:'Rodzina: cousin (kuzyn)',
+  diag:D(`Co znaczy <b>aunt</b> i <b>uncle</b>?`,'ciocia i wujek',['babcia i dziadek','siostra i brat'],`<b>aunt</b> = ciocia, <b>uncle</b> = wujek. Dzieci cioci i wujka to nasi kuzyni (<b>cousins</b>).`),
+  main:{type:'choice',ctx:'reading',ev:1,q:`Adam is Mateusz's … (kim jest Adam dla Mateusza?)`,opts:['brother','uncle','cousin'],a:'cousin',why:`W tekście: „His parents are my aunt and uncle”. Rodzice Adama to ciocia i wujek Mateusza, więc Adam jest jego kuzynem – <b>cousin</b>.`}},
+ {topic:'Rodzina: sister (same mother and father)',
+  diag:D(`Co znaczy <b>We have the same mother and father</b>?`,'Mamy tę samą mamę i tego samego tatę.',['Mamy różne mamy.','Nasi rodzice to ciocia i wujek.'],`<b>same</b> = ten sam. Ta sama mama i ten sam tata – to rodzeństwo. Maja to dziewczyna, więc siostra.`),
+  main:{type:'choice',ctx:'reading',ev:2,q:`Maja is Mateusz's … (kim jest Maja dla Mateusza?)`,opts:['cousin','sister','aunt'],a:'sister',why:`W tekście: „We have the same mother and father”. To rodzeństwo, a Maja jest dziewczyną, więc <b>sister</b>.`}},
+ {topic:'Rodzina: wife → mother',
+  diag:D(`Co znaczy <b>she is my father's wife</b>?`,'ona jest żoną mojego taty',['ona jest siostrą mojego taty','ona jest mamą mojego taty'],`<b>wife</b> = żona. <b>my father's wife</b> = żona mojego taty. To moja mama.`),
+  main:{type:'choice',ctx:'reading',ev:3,q:`Anna is Mateusz's … (kim jest Anna dla Mateusza?)`,opts:['mother','aunt','grandmother'],a:'mother',why:`W tekście: „she is my father's wife”. Żona taty to mama – <b>mother</b>.`}},
+ {topic:'Rodzina: uncle (brat mamy)',
+  diag:D(`Co znaczy <b>my mother's brother</b>?`,'brat mojej mamy',['mama mojego brata','brat mojego taty'],`<b>brother</b> = brat. <b>my mother's brother</b> = brat mojej mamy.`),
+  main:{type:'choice',ctx:'reading',ev:4,q:`Alex is Mateusz's … (kim jest Alex dla Mateusza?)`,opts:['cousin','uncle','brother'],a:'uncle',why:`W tekście: „He's my mother's brother”. Brat mamy to wujek – <b>uncle</b>.`}},
+ {topic:'Rodzina: grandmother (mama taty)',
+  diag:D(`Co znaczy <b>she's my father's mother</b>?`,'ona jest mamą mojego taty',['ona jest żoną mojego taty','ona jest siostrą mojego taty'],`<b>my father's mother</b> = mama mojego taty.`),
+  main:{type:'choice',ctx:'reading',ev:5,q:`Wera is Mateusz's … (kim jest Wera dla Mateusza?)`,opts:['aunt','mother','grandmother'],a:'grandmother',why:`W tekście: „she's my father's mother”. Mama taty to babcia – <b>grandmother</b>.`}}
+]},
+/* ---------- Zadanie 8 ---------- */
+{num:8,name:'Speaking',instr:'Uzupełnij dialogi właściwymi wyrazami.',note:'To rozmowa dwóch osób, które się poznają. Dotknij wyrazu, który pasuje do podświetlonej luki. Każdy wyraz pasuje tylko raz.',items:[
+ {topic:'Pytanie o imię: What\'s your name?',
+  diag:D(`B odpowiada: „Nour.” O co zapytał A?`,'o imię',['o wiek','o miasto'],`„Nour” to imię. Pytanie: <b>What's your name?</b> = Jak masz na imię? (<b>What's</b> = What is.)`),
+  main:{type:'choice',chips:true,ctx:'dialogue',n:1,opts:BANK8,a:"what's",why:`<b>What's your name?</b> = Jak masz na imię? <b>What's</b> to skrót od <b>what is</b>.`}},
+ {topic:'My = mój',
+  diag:D(`Co znaczy <b>my</b>?`,'mój, moje',['twój','jego'],`<b>my</b> = mój / moja / moje. <b>My name's Milena.</b> = Mam na imię Milena (dosłownie: Moje imię to Milena).`),
+  main:{type:'choice',chips:true,ctx:'dialogue',n:2,opts:BANK8,a:'my',why:`<b>My name's Milena.</b> = Mam na imię Milena. <b>my</b> = mój, moje.`}},
+ {topic:'Przymiotnik: lovely (śliczny)',
+  diag:D(`Co znaczy <b>lovely</b>?`,'śliczny, uroczy',['brzydki','głośny'],`<b>lovely</b> = śliczny, uroczy. B chwali coś, co usłyszał od A – imię Milena.`),
+  main:{type:'choice',chips:true,ctx:'dialogue',n:3,opts:BANK8,a:'name',why:`<b>That's a lovely name!</b> = To śliczne imię! A właśnie powiedziała, że ma na imię Milena.`}},
+ {topic:'Where are you from? = Skąd jesteś?',
+  diag:D(`Co znaczy <b>Where are you from?</b>`,'Skąd jesteś?',['Ile masz lat?','Jak się nazywasz?'],`<b>Where are you from?</b> = Skąd jesteś? Odpowiedź: kraj lub miasto, np. <b>Poland</b>.`),
+  main:{type:'choice',chips:true,ctx:'dialogue',n:4,opts:BANK8,a:'from',why:`<b>Where are you from?</b> = Skąd jesteś? A odpowiada: <b>Poland</b> (z Polski).`}},
+ {topic:'How old are you? = Ile masz lat?',
+  diag:D(`A odpowiada: „20.” O co zapytał B?`,'o wiek (ile ma lat)',['o imię','o miasto'],`„20” to liczba lat. Pytanie: <b>How old are you?</b> = Ile masz lat?`),
+  main:{type:'choice',chips:true,ctx:'dialogue',n:5,opts:BANK8,a:'how',why:`<b>How old are you?</b> = Ile masz lat? Odpowiedź: <b>20</b>.`}}
+]},
+/* ---------- Zadanie 10 (Extra) ---------- */
+{num:10,name:'Extra',instr:'Wybierz pytanie do każdej odpowiedzi.',note:'W teście pytanie trzeba napisać, tu je wybierasz. Dotknij pytania, które pasuje do odpowiedzi pod spodem.',items:[
+ {topic:'Pytanie „tak / nie” z be',
+  diag:D(`Odpowiedź to <b>No, I'm happy.</b> Jakie pytanie do niej pasuje?`,'takie, na które odpowiada się „tak” lub „nie”',['takie, które zaczyna się od „Where”','takie o liczbę lat'],`Odpowiedź zaczyna się od <b>No</b>, więc pytanie jest typu „tak / nie”: <b>Are you …?</b> „No, I'm happy” = Nie (nie jestem smutny), jestem szczęśliwy.`),
+  main:{type:'choice',stem:`Pytanie: ___\nOdpowiedź: „No, I'm happy.”`,opts:['Where are you from?','Are you sad?','How old are you?'],a:'Are you sad?',why:`Odpowiedź <b>No, I'm happy.</b> pasuje do pytania „tak / nie” o samopoczucie: <b>Are you sad?</b> = Czy jesteś smutny?`}},
+ {topic:'Are you thirsty? (water)',
+  diag:D(`Co znaczy <b>I need some water</b>?`,'Potrzebuję wody.',['Mam wodę.','Nie lubię wody.'],`<b>need</b> = potrzebować, <b>water</b> = woda. Kto potrzebuje wody, jest spragniony – <b>thirsty</b>.`),
+  main:{type:'choice',stem:`Pytanie: ___\nOdpowiedź: „Yes, I need some water.”`,opts:['Are you hungry?',`What's your name?`,'Are you thirsty?'],a:'Are you thirsty?',why:`Ktoś potrzebuje wody, więc jest spragniony: <b>Are you thirsty?</b> Na pytanie „tak / nie” odpowiada się <b>Yes</b>.`}},
+ {topic:'Where are you from? (I\'m from …)',
+  diag:D(`Co znaczy <b>I'm from Wales</b>?`,'Jestem z Walii.',['Mam na imię Wales.','Mam Walię.'],`<b>from</b> = z, skąd. <b>I'm from Wales</b> = Jestem z Walii.`),
+  main:{type:'choice',stem:`Pytanie: ___\nOdpowiedź: „I'm from Wales.”`,opts:['Where are you from?','How old are you?',`What's your name?`],a:'Where are you from?',why:`<b>Where are you from?</b> = Skąd jesteś? Odpowiedź: <b>I'm from …</b>`}},
+ {topic:'What\'s your name? (I\'m Nick)',
+  diag:D(`Co to jest <b>Nick</b> w odpowiedzi <b>I'm Nick</b>?`,'imię',['miasto','kolor'],`<b>I'm Nick</b> = Jestem Nick (mam na imię Nick). Pytamy o imię: <b>What's your name?</b>`),
+  main:{type:'choice',stem:`Pytanie: ___\nOdpowiedź: „I'm Nick.”`,opts:['How old are you?',`What's your name?`,'Where are you from?'],a:`What's your name?`,why:`<b>What's your name?</b> = Jak masz na imię? Odpowiedź: <b>I'm Nick.</b>`}},
+ {topic:'What\'s your favourite colour?',
+  diag:D(`Co znaczy <b>favourite</b>?`,'ulubiony',['nowy','duży'],`<b>favourite</b> = ulubiony. <b>Blue is my favourite</b> = Niebieski jest moim ulubionym (kolorem).`),
+  main:{type:'choice',stem:`Pytanie: ___\nOdpowiedź: „Blue is my favourite.”`,opts:['How old are you?',`What's your favourite food?`,`What's your favourite colour?`],a:`What's your favourite colour?`,why:`<b>blue</b> = niebieski – to kolor. Pytanie: <b>What's your favourite colour?</b> = Jaki jest twój ulubiony kolor?`}}
+]},
+/* ---------- Zadanie 11 (Extra) ---------- */
+{num:11,name:'Extra',instr:'Uzupełnij zdania.',note:'Rodzina po angielsku. Dotknij słowa, które pasuje do luki. Myśl krok po kroku: czyja mama? czyj tata?',items:[
+ {topic:'Rodzina: my mother\'s mother = grandmother',
+  diag:D(`Co znaczy <b>my mother's mother</b>?`,'mama mojej mamy',['mama mojego taty','moja mama'],`<b>my mother's mother</b> = mama mojej mamy.`),
+  main:{type:'choice',chips:true,stem:`My mother's mother is my ___.`,opts:['aunt','grandmother','mother'],a:'grandmother',why:`Mama mamy to babcia – <b>grandmother</b>.`}},
+ {topic:'Rodzina: my brother\'s father = father',
+  diag:D(`Co znaczy <b>my brother's father</b>?`,'tata mojego brata',['brat mojego taty','tata mojego taty'],`<b>my brother's father</b> = tata mojego brata. Mój brat i ja mamy tych samych rodziców.`),
+  main:{type:'choice',chips:true,stem:`My brother's father is my ___.`,opts:['uncle','grandfather','father'],a:'father',why:`Tata mojego brata to też mój tata – <b>father</b>.`}},
+ {topic:'Rodzina: my father\'s brother = uncle',
+  diag:D(`Co znaczy <b>my father's brother</b>?`,'brat mojego taty',['tata mojego brata','brat mojej mamy'],`<b>my father's brother</b> = brat mojego taty.`),
+  main:{type:'choice',chips:true,stem:`My father's brother is my ___.`,opts:['grandfather','uncle','cousin'],a:'uncle',why:`Brat taty to wujek – <b>uncle</b>.`}},
+ {topic:'Rodzina: my sister\'s grandfather = grandfather',
+  diag:D(`Co znaczy <b>my sister's grandfather</b>?`,'dziadek mojej siostry',['tata mojej siostry','wujek mojej siostry'],`<b>my sister's grandfather</b> = dziadek mojej siostry. Siostra i ja mamy tych samych dziadków.`),
+  main:{type:'choice',chips:true,stem:`My sister's grandfather is my ___.`,opts:['grandfather','father','uncle'],a:'grandfather',why:`Dziadek mojej siostry jest też moim dziadkiem – <b>grandfather</b>.`}},
+ {topic:'Rodzina: cousin (kuzyn) i aunt (ciocia)',
+  diag:D(`Kto to jest <b>cousin</b>?`,'dziecko cioci lub wujka (kuzyn)',['mój brat','moja babcia'],`<b>cousin</b> = kuzyn / kuzynka – dziecko mojej cioci lub wujka.`),
+  main:{type:'choice',chips:true,stem:`My cousin's ___ is my mother.`,opts:['mother','grandmother','aunt'],a:'aunt',why:`Dla mojego kuzyna moja mama jest ciocią – <b>aunt</b>.`}}
+]}
+];
+
+const ITEMS=[];
+SECTIONS.forEach((s,si)=>s.items.forEach((it,k)=>ITEMS.push(Object.assign({s:si,k},it))));
+const N=ITEMS.length;
+const FIRST=SECTIONS.map((s,si)=>ITEMS.findIndex(it=>it.s===si));
+
+/* ===== Pomocnicze ===== */
+const $=(s,r)=>(r||document).querySelector(s);
+const $$=(s,r)=>[...(r||document).querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm=s=>String(s).toLowerCase().replace(/[’‘`´]/g,"'").replace(/\s+/g,' ').replace(/\s+\?/g,'?').replace(/[.!]+$/,'').trim();
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const app=$('#app');
+
+/* ===== Stan i zapis ===== */
+const KEY='test-link-klasa4-unit1-v1';
+const S={i:0,phase:'start',res:[],name:''};
+function save(){try{localStorage.setItem(KEY,JSON.stringify({i:S.i,res:S.res,name:S.name}))}catch(e){}}
+function load(){try{const v=JSON.parse(localStorage.getItem(KEY));if(v&&typeof v.i==='number'&&v.i>=0&&v.i<N){S.i=v.i;S.res=Array.isArray(v.res)?v.res:[];S.name=v.name||''}}catch(e){}}
+function rec(kind,first,tries){const r=S.res[S.i]=S.res[S.i]||{};r[kind]=first;r[kind+'t']=tries;save()}
+function reset(){S.i=0;S.res=[];try{localStorage.removeItem(KEY)}catch(e){}}
+
+function go(phase,i){
+  if(i!==undefined)S.i=i;
+  S.phase=phase;
+  render();
+  window.scrollTo(0,0);
+  const c=$('#card');if(c)c.focus({preventScroll:true});
+}
+function next(){
+  const j=S.i+1;
+  if(j>=N){S.phase='end';save();render();window.scrollTo(0,0);return}
+  const newSec=ITEMS[j].s!==ITEMS[S.i].s;
+  S.i=j;save();
+  go(newSec?'intro':'diag');
+}
+const isLastOfSection=()=>{const it=ITEMS[S.i];return it.k===SECTIONS[it.s].items.length-1};
+
+/* ===== Nagłówek ===== */
+function header(){
+  const inTest=['intro','diag','main'].includes(S.phase);
+  let pct=0;
+  if(inTest)pct=(S.i+(S.phase==='main'?0.5:0))/N*100;
+  else if(S.phase==='end')pct=100;
+  else if(S.phase==='start')pct=S.i/N*100;
+  $('#barfill').style.width=pct+'%';
+  $('.bar').setAttribute('aria-valuenow',Math.round(pct));
+  $('#count').textContent=inTest?`${S.i+1} z ${N}`:'';
+}
+
+function card(html){
+  app.innerHTML=`<section class="card" id="card" tabindex="-1">${html}</section>`;
+  return $('#card');
+}
+
+/* ===== Elementy wspólne ===== */
+function stemHTML(stem,fill,cls){
+  return esc(stem).replace('___',`<span class="gap ${cls||''}" id="gapfill">${fill?esc(fill):'&nbsp;'}</span>`).replace(/\n/g,'<br>');
+}
+function dialogueHTML(cur,fill){
+  const lines=DIALOG.map(([who,txt])=>{
+    const h=esc(txt).replace(/\{(\d)\}/g,(m,d)=>{
+      const n=+d,w=DIALOG_ANS[n],c=DIALOG_CAP[n]?cap(w):w;
+      if(n===cur)return `<span class="gap cur" id="gapfill">${fill?esc(DIALOG_CAP[n]?cap(fill):fill):'?'}</span>`;
+      if(n<cur)return `<span class="gap done">${esc(c)}</span>`;
+      return `<span class="gap later">(${n})</span>`;
+    });
+    return `<p><span class="who">${who}</span>${h}</p>`;
+  }).join('');
+  return `<div class="dlg">${lines}</div>`;
+}
+function readingHTML(ev){
+  return `<div class="read" id="read" ${ev?`data-ev="${ev}"`:''}>${READING}</div>`;
+}
+function picHTML(p){
+  return `<div class="pic"><span class="emo" aria-hidden="true">${p.e}</span><span class="muted small">Rysunek w teście: ${esc(p.d)}</span></div>`;
+}
+function showEv(n){
+  const r=$('#read');if(!r)return;
+  r.dataset.ev=n;
+  const e=r.querySelector(`.ev[data-e="${n}"]`);
+  if(e)r.scrollTop=Math.max(0,e.offsetTop-24);
+}
+function gapsPreview(parts){
+  return parts.map(p=>typeof p==='string'?esc(p).replace(/\n/g,'<br>'):'<span class="gap">&nbsp;</span>').join('');
+}
+function ctxHTML(it,mode){
+  const m=it.main;
+  if(m.type==='order'){
+    const chips=m.words.map(w=>`<span class="chip static">${esc(w)}</span>`).join(' ');
+    return `<p class="lbl">Zdanie z testu: ułóż je z tych wyrazów</p><div class="bank">${chips}</div>`;
+  }
+  if(m.type==='gaps')return `<p class="lbl">Zdanie z testu</p><p class="gline">${gapsPreview(m.parts)}</p>`;
+  if(m.ctx==='reading')return `<p class="lbl">Pytanie z testu</p><p class="qline"><b>${esc(m.q)}</b></p>${readingHTML()}`;
+  if(m.ctx==='dialogue')return `<p class="lbl">Dialog z testu – luka ${m.n}</p>${dialogueHTML(m.n)}`;
+  return `<p class="lbl">Zdanie z testu</p>${m.pic?picHTML(m.pic):''}<p class="sent">${stemHTML(m.stem)}</p>`;
+}
+function fb(kind,html){
+  const el=$('#fb');
+  el.className='fb '+kind;
+  el.innerHTML=html;
+}
+function nextButton(){
+  const act=$('#act');
+  const label=S.i===N-1?'Zobacz wynik':isLastOfSection()?'Następne zadanie':'Dalej';
+  act.innerHTML=`<button class="btn" id="nx" type="button">${label} →</button>`;
+  const b=$('#nx');
+  b.onclick=()=>S.phase==='diag'?go('main'):next();
+  b.focus({preventScroll:false});
+}
+
+/* ===== Ekrany ===== */
+function vStart(){
+  const resume=S.i>0||S.res.length>0;
+  const jump=SECTIONS.map((s,si)=>`<button class="btn sec" type="button" data-sec="${si}">Zadanie ${s.num} · ${s.name}</button>`).join(' ');
+  card(`
+    <h1>Link dla klasy IV · Unit 1 – test krok po kroku</h1>
+    <p>Robisz po jednym zdaniu. <b>Przed każdym zdaniem z testu</b> dostajesz jedno krótkie pytanie pomocnicze. Jeśli jeszcze czegoś nie wiesz, wyjaśniam to i sprawdzamy jeszcze raz.</p>
+    <ul class="plain">
+      <li>${SECTIONS.length} zadań, ${N} zdań.</li>
+      <li>Bez zadania ze słuchania (7) i bez zadania z pisania (9).</li>
+      <li>Nie ma limitu czasu. Pomyłka nic nie psuje – po niej jest wyjaśnienie.</li>
+    </ul>
+    <p><label for="nm">Imię (nie trzeba):</label><br><input class="name" id="nm" type="text" autocomplete="off" value="${esc(S.name)}"></p>
+    <div class="actions">
+      ${resume?`<button class="btn" id="cont" type="button">Kontynuuj od pytania ${S.i+1}</button><button class="btn sec" id="fresh" type="button">Zacznij od nowa</button>`
+              :`<button class="btn" id="begin" type="button">Zaczynamy</button>`}
+    </div>
+    <details><summary>Dla nauczyciela: przejdź do wybranego zadania</summary><div class="actions">${jump}</div></details>
+  `);
+  const nm=$('#nm');
+  nm.oninput=()=>{S.name=nm.value.trim();save()};
+  const begin=$('#begin');if(begin)begin.onclick=()=>{reset();S.name=nm.value.trim();go('intro',0)};
+  const cont=$('#cont');if(cont)cont.onclick=()=>{
+    const it=ITEMS[S.i];go(it.k===0&&!S.res[S.i]?'intro':'diag');
+  };
+  const fresh=$('#fresh');if(fresh)fresh.onclick=()=>{const n=nm.value.trim();reset();S.name=n;save();go('intro',0)};
+  $$('[data-sec]').forEach(b=>b.onclick=()=>go('intro',FIRST[+b.dataset.sec]));
+}
+
+function vIntro(){
+  const it=ITEMS[S.i],sec=SECTIONS[it.s];
+  card(`
+    <span class="tag test">Zadanie ${sec.num} · ${sec.name}</span>
+    <h1>${esc(sec.instr)}</h1>
+    ${sec.ex?`<div class="fb info"><b class="h">Przykład z testu</b>${sec.ex}</div>`:''}
+    <p class="muted">${sec.items.length} zdań. ${sec.note}</p>
+    <p class="muted small">Przed każdym zdaniem będzie jedno krótkie pytanie pomocnicze.</p>
+    <div class="actions"><button class="btn" id="go" type="button">Zaczynamy</button></div>
+  `);
+  $('#go').onclick=()=>go('diag');
+}
+
+function vDiag(){
+  const it=ITEMS[S.i],sec=SECTIONS[it.s],d=it.diag;
+  const wrong=[];let done=false;
+  card(`
+    <span class="tag help">Pytanie pomocnicze</span>
+    <p class="muted small">Zadanie ${sec.num}, zdanie ${it.k+1} z ${sec.items.length}. Zanim zrobisz to zdanie, sprawdźmy jedną rzecz.</p>
+    <div class="ctx">${ctxHTML(it,'diag')}</div>
+    <h1>${d.q}</h1>
+    <div class="opts">${d.opts.map((o,k)=>`<button class="opt" type="button" data-k="${k}"><span class="l">${'abcdef'[k]}</span><span class="t">${esc(o)}</span></button>`).join('')}</div>
+    <div id="fb" role="status" aria-live="polite"></div>
+    <div class="actions" id="act"></div>
+  `);
+  $$('.opt').forEach(b=>b.onclick=()=>{
+    if(done)return;
+    const k=+b.dataset.k;
+    if(k===d.a){
+      done=true;
+      b.classList.add('right');
+      $$('.opt').forEach(x=>{if(x!==b)x.disabled=true});
+      rec('d',wrong.length===0,wrong.length+1);
+      fb('ok',wrong.length===0
+        ?`<b class="h">Dobrze!</b>Teraz zdanie z testu.`
+        :`<b class="h">Tak, teraz się zgadza.</b>${d.why}<br>Zapamiętaj to i przejdź do zdania z testu.`);
+      nextButton();
+    }else{
+      wrong.push(k);
+      b.classList.add('wrong');b.disabled=true;
+      fb('bad',`<b class="h">Jeszcze nie. Wyjaśniam:</b>${d.why}<br><b>Teraz wybierz jeszcze raz.</b>`);
+    }
+  });
+}
+
+function vMain(){
+  const it=ITEMS[S.i],m=it.main,sec=SECTIONS[it.s];
+  const head=`<span class="tag test">Zdanie z testu</span>
+    <p class="muted small">Zadanie ${sec.num}, zdanie ${it.k+1} z ${sec.items.length}. ${esc(sec.instr)}</p>`;
+  if(m.type==='choice')mainChoice(it,head);
+  else if(m.type==='order')mainOrder(it,head);
+  else mainGaps(it,head);
+}
+
+function mainChoice(it,head){
+  const m=it.main;const wrong=[];let done=false;
+  let top='';
+  if(m.ctx==='reading')top=`<p class="qline"><b>${esc(m.q)}</b></p>${readingHTML()}`;
+  else if(m.ctx==='dialogue')top=`<div class="ctx">${dialogueHTML(m.n)}</div>`;
+  else top=`${m.pic?picHTML(m.pic):''}<p class="sent">${stemHTML(m.stem)}</p>`;
+  const opts=m.chips
+    ?`<div class="bank">${m.opts.map((o,k)=>`<button class="chip" type="button" data-k="${k}">${esc(o)}</button>`).join('')}</div>`
+    :`<div class="opts">${m.opts.map((o,k)=>`<button class="opt" type="button" data-k="${k}"><span class="l">${'abcdef'[k]}</span><span class="t">${esc(o)}</span></button>`).join('')}</div>`;
+  card(`${head}${top}${opts}<div id="fb" role="status" aria-live="polite"></div><div class="actions" id="act"></div>`);
+  $$('[data-k]').forEach(b=>b.onclick=()=>{
+    if(done)return;
+    const k=+b.dataset.k,v=m.opts[k];
+    if(v===m.a){
+      done=true;
+      b.classList.add('right');
+      $$('[data-k]').forEach(x=>{if(x!==b)x.disabled=true});
+      const g=$('#gapfill');if(g){g.textContent=m.ctx==='dialogue'&&[1,2,5].includes(m.n)?cap(v):v;g.classList.add('done')}
+      if(m.ev)showEv(m.ev);
+      rec('m',wrong.length===0,wrong.length+1);
+      fb('ok',`<b class="h">${wrong.length===0?'Dobrze!':'Tak, ta odpowiedź jest dobra.'}</b>${m.why}`);
+      nextButton();
+    }else{
+      wrong.push(k);
+      b.classList.add('wrong');b.disabled=true;
+      if(m.ev)showEv(m.ev);
+      fb('bad',`<b class="h">Jeszcze nie.</b>${m.ev?'Zobacz podświetlone miejsce w tekście. ':''}Wybierz inną odpowiedź.<br><b>Przypomnienie:</b> ${it.diag.why}`);
+    }
+  });
+}
+
+function mainGaps(it,head){
+  const m=it.main;let attempts=0,done=false,k=0;
+  const gaps=m.parts.filter(p=>typeof p!=='string');
+  const html=m.parts.map(p=>{
+    if(typeof p==='string')return esc(p).replace(/\n/g,'<br>');
+    const i=k++;
+    return `<input class="gi" data-g="${i}" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Luka ${i+1}">`;
+  }).join('');
+  card(`${head}<p class="gline">${html}</p>
+    <div id="fb" role="status" aria-live="polite"></div>
+    <div class="actions" id="act"><button class="btn" id="chk" type="button">Sprawdź</button></div>`);
+  const els=$$('[data-g]');
+  els[0].focus();
+  els.forEach(e=>e.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();check()}}));
+  $('#chk').onclick=check;
+  function ok(p,v){const n=x=>norm(x).replace(/\?+$/,'');return p.a.some(x=>n(x)===n(v))}
+  function check(){
+    if(done)return;
+    if(els.some(e=>!e.value.trim())){fb('hint',`<b class="h">Uzupełnij wszystkie luki.</b>Potem dotknij „Sprawdź”.`);return}
+    const results=els.map((e,i)=>ok(gaps[i],e.value));
+    els.forEach((e,i)=>{e.classList.toggle('ok',results[i]);e.classList.toggle('bad',!results[i])});
+    if(results.every(Boolean)){
+      done=true;els.forEach(e=>e.disabled=true);
+      rec('m',attempts===0,attempts+1);
+      $('#chk').remove();
+      fb('ok',`<b class="h">${attempts===0?'Dobrze!':'Tak, teraz jest poprawnie.'}</b>${m.why}`);
+      nextButton();
+    }else{
+      attempts++;
+      if(attempts===1){
+        fb('hint',`<b class="h">Prawie. Czerwona luka jest do poprawienia.</b>${m.hint}`);
+      }else{
+        done=true;
+        els.forEach((e,i)=>{e.value=gaps[i].a[0];e.disabled=true;e.classList.remove('bad');e.classList.add('ok')});
+        rec('m',false,attempts);
+        $('#chk').remove();
+        fb('info',`<b class="h">Pokazuję poprawną odpowiedź.</b>${m.why}`);
+        nextButton();
+      }
+    }
+  }
+}
+
+function mainOrder(it,head){
+  const m=it.main;let placed=[],attempts=0,done=false,marks=null;
+  card(`${head}
+    <p class="muted small">Ułóż zdanie:</p>
+    <div class="build" id="build" aria-label="Twoje zdanie"></div>
+    <div class="bank" id="bank" aria-label="Wyrazy do wyboru"></div>
+    <div id="fb" role="status" aria-live="polite"></div>
+    <div class="actions" id="act"><button class="btn" id="chk" type="button" disabled>Sprawdź</button><button class="btn sec" id="clr" type="button">Wyczyść</button></div>`);
+  function draw(){
+    $('#build').innerHTML=placed.map((wi,pos)=>`<button class="chip ${marks?(marks[pos]?'ok':'bad'):''}" type="button" data-p="${pos}" ${done?'disabled':''}>${esc(m.words[wi])}</button>`).join('');
+    $('#bank').innerHTML=m.words.map((w,wi)=>placed.includes(wi)?'':`<button class="chip" type="button" data-w="${wi}" ${done?'disabled':''}>${esc(w)}</button>`).join('');
+    const c=$('#chk');if(c)c.disabled=placed.length!==m.words.length;
+    $$('#build [data-p]').forEach(b=>b.onclick=()=>{if(done)return;placed.splice(+b.dataset.p,1);marks=null;draw()});
+    $$('#bank [data-w]').forEach(b=>b.onclick=()=>{if(done)return;placed.push(+b.dataset.w);marks=null;draw()});
+  }
+  draw();
+  $('#clr').onclick=()=>{if(done)return;placed=[];marks=null;draw()};
+  $('#chk').onclick=()=>{
+    if(done||placed.length!==m.words.length)return;
+    const toks=placed.map(i=>m.words[i]);
+    if(norm(toks.join(' '))===norm(m.ans.join(' '))){
+      done=true;marks=toks.map(()=>true);draw();
+      rec('m',attempts===0,attempts+1);
+      $('#chk').remove();$('#clr').remove();
+      fb('ok',`<b class="h">${attempts===0?'Dobrze!':'Tak, teraz jest poprawnie.'}</b>${m.why}`);
+      nextButton();
+    }else{
+      attempts++;
+      if(attempts===1){
+        marks=toks.map((t,i)=>t===m.ans[i]);draw();
+        fb('hint',`<b class="h">Prawie. Czerwone wyrazy stoją w złym miejscu.</b>${m.hint}<br>Dotknij wyrazu, żeby go zdjąć, i ułóż jeszcze raz.`);
+      }else{
+        done=true;
+        placed=m.ans.map(t=>m.words.indexOf(t));marks=placed.map(()=>true);draw();
+        rec('m',false,attempts);
+        $('#chk').remove();$('#clr').remove();
+        fb('info',`<b class="h">Pokazuję poprawną kolejność.</b>${m.why}`);
+        nextButton();
+      }
+    }
+  };
+}
+
+/* ===== Wynik ===== */
+function secScore(si){
+  let got=0,tot=0;
+  ITEMS.forEach((it,i)=>{if(it.s===si){tot++;if((S.res[i]||{}).m===true)got++}});
+  return [got,tot];
+}
+function reportText(){
+  let pts=0;
+  const lines=SECTIONS.map((s,si)=>{const [g,t]=secScore(si);pts+=g;return `Zadanie ${s.num} (${s.name}): ${g}/${t}`});
+  const weak=[...new Set(ITEMS.filter((it,i)=>{const r=S.res[i]||{};return r.d===false||r.m===false}).map(it=>it.topic))];
+  return `Link dla klasy IV, Unit 1, Test A – krok po kroku${S.name?' – '+S.name:''}\nWynik (zdania zrobione bez pomyłki za pierwszym razem): ${pts}/${N}\n\n${lines.join('\n')}\n\nDo powtórki:\n${weak.length?weak.map(w=>'- '+w).join('\n'):'- nic'}`;
+}
+function vEnd(){
+  let pts=0;
+  const rows=SECTIONS.map((s,si)=>{const [g,t]=secScore(si);pts+=g;return `<tr><td>Zadanie ${s.num} · ${s.name}</td><td class="n">${g} / ${t}</td></tr>`}).join('');
+  const seen=new Set(),rev=[];
+  ITEMS.forEach((it,i)=>{
+    const r=S.res[i]||{};
+    if((r.d===false||r.m===false)&&!seen.has(it.topic)){seen.add(it.topic);rev.push(`<div class="rev"><b>${esc(it.topic)}</b><br>${it.diag.why}</div>`)}
+  });
+  const detail=ITEMS.map((it,i)=>{
+    const r=S.res[i]||{};
+    const f=v=>v===true?'✓':v===false?'✗':'–';
+    return `<tr><td>${SECTIONS[it.s].num}.${it.k+1}</td><td>${esc(it.topic)}</td><td class="n">${f(r.d)} <span class="muted small">(${r.dt||0})</span></td><td class="n">${f(r.m)} <span class="muted small">(${r.mt||0})</span></td></tr>`;
+  }).join('');
+  card(`
+    <span class="tag test">Koniec testu</span>
+    <h1>${S.name?esc(S.name)+', t':'T'}o już wszystko.</h1>
+    <p class="score">${pts} / ${N}</p>
+    <p class="muted">Tyle zdań zrobiłaś bez pomyłki za pierwszym razem. Pozostałe zdania też są zrobione – po wyjaśnieniu.</p>
+    <table><tbody>${rows}</tbody></table>
+    <h2>Do powtórki</h2>
+    ${rev.length?rev.join(''):'<p>Nic – wszystkie pytania pomocnicze i zdania poszły bez pomyłki.</p>'}
+    <details><summary>Dla nauczyciela: szczegóły i raport</summary>
+      <p class="muted small">Kolumny: pytanie pomocnicze / zdanie z testu. ✓ = dobrze za pierwszym razem, ✗ = były pomyłki. W nawiasie: liczba prób.</p>
+      <table><thead><tr><th>Nr</th><th>Temat</th><th>Pomocnicze</th><th>Test</th></tr></thead><tbody>${detail}</tbody></table>
+      <h2>Raport do skopiowania</h2>
+      <textarea class="rep" id="rep" readonly>${esc(reportText())}</textarea>
+      <div class="actions"><button class="btn sec" id="cp" type="button">Kopiuj raport</button></div>
+      <p id="cpm" class="muted small" role="status"></p>
+    </details>
+    <div class="actions"><button class="btn" id="again" type="button">Zacznij od początku</button></div>
+  `);
+  $('#again').onclick=()=>{const n=S.name;reset();S.name=n;save();go('start',0)};
+  $('#cp').onclick=()=>{
+    const ta=$('#rep'),msg=$('#cpm');
+    const fallback=()=>{ta.select();try{document.execCommand('copy');msg.textContent='Skopiowano.'}catch(e){msg.textContent='Zaznacz tekst i skopiuj ręcznie.'}};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(ta.value).then(()=>msg.textContent='Skopiowano.').catch(fallback);
+    else fallback();
+  };
+}
+
+function render(){
+  header();
+  ({start:vStart,intro:vIntro,diag:vDiag,main:vMain,end:vEnd})[S.phase]();
+}
+$('#menu').onclick=()=>{
+  if(S.phase==='end'||S.phase==='start'){go('start')}
+  else{save();go('start')}
+};
+
+load();
+render();
+</script>
+</body>
+</html>
