@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stalkerware — Teacher key</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-primary:#0F172A;
+  --color-background:#FFFFFF;
+  --color-surface:#F8FAFC;
+  --color-text:#334155;
+  --color-muted:#64748B;
+  --color-accent:#0055FF;
+  --color-border:#CBD5E1;
+  --color-flag:#B42318;
+  --font-title:'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --font-head:'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --font-body:'IBM Plex Sans',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --font-mono:'IBM Plex Mono','Consolas',monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:#E2E8F0;
+  font-family:var(--font-body);
+  color:var(--color-text);
+  font-size:14px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+.page{
+  position:relative;width:210mm;min-height:297mm;background:var(--color-background);
+  margin:0 auto 12mm auto;padding:16mm 16mm 14mm 16mm;display:flex;flex-direction:column;
+  box-shadow:0 1px 4px rgba(15,23,42,.18);
+}
+.page-content{flex:1 0 auto;}
+/* HEADER */
+.doc-header{
+  border-bottom:2px solid var(--color-primary);padding-bottom:4mm;margin-bottom:5mm;
+  display:flex;justify-content:space-between;align-items:flex-end;gap:8mm;
+}
+.doc-header h1{font-family:var(--font-title);font-weight:700;font-size:28px;line-height:1.12;letter-spacing:-.3px;color:var(--color-primary);margin:0 0 3px 0;}
+.doc-header .dek{font-size:13px;color:var(--color-text);margin:0;max-width:118mm;}
+.doc-meta{font-family:var(--font-mono);font-weight:500;font-size:11px;letter-spacing:.5px;color:var(--color-muted);text-align:right;text-transform:uppercase;white-space:nowrap;line-height:1.8;}
+/* SECTION */
+.section{margin-top:5mm;}
+.section-head{display:flex;justify-content:space-between;align-items:baseline;gap:6mm;border-bottom:1px solid var(--color-border);padding-bottom:1.5mm;margin-bottom:3.5mm;}
+.section-title{font-family:var(--font-head);font-weight:600;font-size:20px;letter-spacing:-.3px;color:var(--color-primary);margin:0;page-break-after:avoid;}
+.section-meta{font-family:var(--font-mono);font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:var(--color-muted);}
+/* GUIDE BOX */
+.guide{border:1px solid var(--color-border);background:var(--color-surface);padding:2.6mm 4mm;margin:0;}
+.guide .label{font-family:var(--font-mono);font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--color-muted);margin-bottom:1mm;}
+.guide ul{margin:0;padding-left:5mm;font-size:12.5px;}
+.guide li{margin-bottom:.6mm;}
+/* EXERCISE */
+.exercise{border-top:1px solid var(--color-border);padding-top:3mm;margin-top:5mm;page-break-inside:avoid;}
+.exercise:first-child{margin-top:0;border-top:0;padding-top:0;}
+.exercise h3{font-family:var(--font-head);font-weight:600;font-size:16px;letter-spacing:-.2px;color:var(--color-primary);margin:0 0 2.5mm 0;page-break-after:avoid;}
+.instruction{background:var(--color-surface);border-left:2px solid var(--color-accent);padding:2mm 3.5mm;margin:0 0 3mm 0;font-size:13px;}
+.instruction .mode{font-family:var(--font-mono);font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:var(--color-muted);display:block;margin-bottom:.8mm;}
+.extra{margin:2.5mm 0 0 0;font-size:13px;}
+.extra b{font-family:var(--font-mono);font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:var(--color-accent);font-weight:500;margin-right:1.5mm;}
+.sub{font-family:var(--font-head);font-weight:600;font-size:13px;color:var(--color-primary);margin:3mm 0 1.5mm 0;}
+.note{font-size:12.5px;color:var(--color-text);margin:2mm 0 0 0;}
+/* KEY WORDS */
+table.words{width:100%;border-collapse:collapse;margin:0 0 3.5mm 0;font-size:12.5px;}
+table.words td{border:1px solid var(--color-border);padding:1.5mm 2.4mm;vertical-align:top;}
+table.words td.term{font-family:var(--font-mono);font-weight:500;color:var(--color-primary);background:var(--color-surface);width:15%;font-size:12px;}
+table.words td.def{width:35%;}
+/* TEXT */
+.reading{border-left:2px solid var(--color-primary);padding:0 0 0 4mm;margin:0 0 3.5mm 0;}
+.reading p{margin:0 0 2mm 0;font-size:13.5px;line-height:1.5;}
+.reading p:last-child{margin-bottom:0;}
+/* FIGURE */
+.figure{margin:0;page-break-inside:avoid;}
+.figure svg{display:block;width:100%;height:auto;}
+.figure figcaption{font-family:var(--font-mono);font-size:11px;letter-spacing:.4px;color:var(--color-muted);text-transform:uppercase;margin-top:1.5mm;}
+/* TABLE */
+table.grid{width:100%;border-collapse:collapse;margin:0 0 2.5mm 0;font-size:13px;}
+table.grid th,table.grid td{border:1px solid var(--color-border);padding:1.5mm 2.4mm;text-align:left;vertical-align:top;}
+table.grid th{background:var(--color-surface);font-family:var(--font-head);font-weight:600;font-size:12px;color:var(--color-primary);}
+table.grid td.c,table.grid th.c{text-align:center;vertical-align:middle;}
+table.grid td.c label{display:flex;align-items:center;justify-content:center;gap:1.2mm;white-space:nowrap;line-height:1.6;}
+table.grid th.c{line-height:1.25;}
+table.grid td.num{font-family:var(--font-mono);color:var(--color-muted);width:8mm;text-align:center;}
+table.grid td.path{font-weight:600;color:var(--color-primary);font-size:12.5px;}
+table.apps td,table.apps th{font-size:12px;padding:1.5mm 2mm;}
+table.phone td,table.phone th{font-size:12px;padding:1.2mm 2.2mm;}
+table.grid.phone td.path{font-size:12px;}
+table.apps td.app{font-weight:600;color:var(--color-primary);white-space:nowrap;}
+table.apps td.blank{width:13mm;}
+.flagid{font-family:var(--font-mono);font-weight:500;color:var(--color-flag);}
+/* INPUTS */
+input[type=checkbox],input[type=radio]{accent-color:var(--color-primary);width:14px;height:14px;margin:0;vertical-align:-2px;}
+.blank-box{display:inline-block;border-bottom:1px solid var(--color-primary);width:50mm;height:14px;vertical-align:baseline;}
+/* CARD / CHAT */
+.card{border:1px solid var(--color-primary);padding:3mm 4.5mm;margin:3mm 0 0 0;page-break-inside:avoid;}
+.card .label{font-family:var(--font-mono);font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--color-muted);margin-bottom:1mm;}
+.card p{margin:0;font-size:12.5px;}
+.chat{background:var(--color-surface);border:1px solid var(--color-border);border-radius:3px;padding:2.6mm 4mm;font-size:14px;margin:0 0 2.5mm 0;max-width:155mm;}
+.chat .who{font-family:var(--font-mono);font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:var(--color-muted);display:block;margin-bottom:1mm;}
+ol.opts{list-style:none;margin:0 0 2.5mm 0;padding:0;}
+ol.opts li{display:flex;gap:3mm;align-items:flex-start;padding:1.1mm 0;border-bottom:1px solid #E2E8F0;font-size:13px;}
+ol.opts li:last-child{border-bottom:0;}
+ol.opts.two{display:grid;grid-template-columns:1fr 1fr;column-gap:6mm;}
+ol.opts.two li:nth-last-child(2){border-bottom:0;}
+ol.opts .ltr{font-family:var(--font-mono);font-weight:500;color:var(--color-primary);width:5mm;flex:none;}
+ol.opts input{flex:none;margin-top:3px;}
+.phrases{border:1px solid var(--color-border);padding:2.2mm 4mm;margin:0 0 2.5mm 0;font-size:13px;}
+.phrases .label{font-family:var(--font-mono);font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--color-muted);margin-bottom:1mm;}
+.phrases .terms{display:flex;flex-wrap:wrap;gap:1mm 6mm;font-family:var(--font-mono);font-size:12.5px;color:var(--color-primary);}
+.helpline{font-size:12.5px;margin:2.5mm 0 0 0;}
+.helpline .term{font-family:var(--font-mono);color:var(--color-primary);}
+/* FOOTER */
+.page-footer{flex-shrink:0;border-top:1px solid var(--color-border);margin-top:6mm;padding-top:2mm;display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;letter-spacing:.4px;color:var(--color-muted);text-transform:uppercase;}
+a{color:var(--color-accent);text-decoration:underline;}
+@media screen and (max-width:820px){
+  body{font-size:15px;}
+  .page{width:100%;min-height:0;padding:14px;margin:0 0 8px 0;box-shadow:none;}
+  .doc-header{flex-direction:column;align-items:flex-start;gap:3mm;}
+  .doc-meta{text-align:left;}
+  .section-head{flex-direction:column;gap:1mm;}
+  table.words td,table.words td.term,table.words td.def{width:auto;}
+}
+/* PRINT */
+@media print{
+  @page{size:A4;margin:0;}
+  html,body{background:#FFFFFF;}
+  body{font-size:10pt;line-height:1.5;}
+  .page{width:210mm;min-height:297mm;margin:0;padding:16mm 16mm 14mm 16mm;box-shadow:none;}
+  .page:not(:last-child){page-break-after:always;}
+  .doc-header h1{font-size:19pt;}
+  .doc-header .dek{font-size:10pt;}
+  .doc-meta,.section-meta{font-size:8pt;}
+  .section-title{font-size:14pt;}
+  .reading p{font-size:10pt;}
+  .exercise h3{font-size:12pt;}
+  .instruction{font-size:9.5pt;}
+  .instruction .mode,.guide .label,.card .label,.phrases .label,.chat .who,.figure figcaption{font-size:7.5pt;}
+  .guide ul,.extra,.note,.helpline,.card p{font-size:9.5pt;}
+  table.words,table.grid{font-size:9.5pt;}
+  table.words td.term{font-size:9pt;}
+  table.grid th{font-size:9pt;}
+  table.apps td,table.apps th,table.phone td,table.phone th,table.grid.phone td.path{font-size:9pt;}
+  table.grid td.path{font-size:9.5pt;}
+  ol.opts li{font-size:10pt;}
+  .chat{font-size:10.5pt;}
+  .phrases,.phrases .terms{font-size:9.5pt;}
+  .page-footer{font-size:8pt;}
+  .exercise,.card,.figure,table.grid{page-break-inside:avoid;}
+  .exercise h3,.section-title{page-break-after:avoid;}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+
+/* TEACHER KEY */
+.key-list{margin:0;padding-left:5mm;font-size:13px;}
+.key-list li{margin-bottom:1mm;}
+table.grid td.time{font-family:var(--font-mono);font-size:12px;color:var(--color-primary);white-space:nowrap;width:26mm;}
+table.grid td.task{font-weight:600;color:var(--color-primary);width:30mm;}
+table.key td,table.key th{font-size:12.5px;}
+.ans{font-family:var(--font-mono);font-weight:500;color:var(--color-primary);}
+.yes{color:#0B7A3B;font-weight:600;}
+.no{color:var(--color-flag);font-weight:600;}
+.model{border-left:2px solid var(--color-primary);padding:1.5mm 0 1.5mm 4mm;margin:1.5mm 0 2.5mm 0;font-size:13px;}
+.model .label{font-family:var(--font-mono);font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:var(--color-muted);display:block;margin-bottom:.6mm;}
+.small{font-size:12px;color:var(--color-muted);margin:2mm 0 0 0;}
+@media print{
+  .key-list,.model{font-size:9.5pt;}
+  table.key td,table.key th,table.grid td.time{font-size:9pt;}
+  .small{font-size:8.5pt;}
+  .model .label{font-size:7.5pt;}
+}
+</style>
+</head>
+<body>
+<!-- ===== PAGE 1 ===== -->
+<div class="page">
+  <div class="page-content">
+    <header class="doc-header">
+      <div>
+        <h1>Teacher key</h1>
+        <p class="dek">Stalkerware, lesson 17. Timing, answers, and what to do when something comes up.</p>
+      </div>
+      <div class="doc-meta">Not for students<br>90 min · 2–5 students</div>
+    </header>
+    <div class="exercise">
+      <h3>Your role</h3>
+      <ul class="key-list">
+        <li>Start the timer for each task and say “next task”. The worksheet tells students what to do and what to post.</li>
+        <li>Read the chat and check posted answers against this key. Answer with “OK” or “check number 3 again”. Let students find the reason themselves.</li>
+        <li>Keep language corrections for the end of the lesson (see Language, page 2).</li>
+      </ul>
+    </div>
+    <div class="exercise">
+      <h3>Before class — 15 to 20 minutes</h3>
+      <ul class="key-list">
+        <li>Do Tasks 1, 2 and 3 yourself and check them against this key (10 min).</li>
+        <li>On your own phone, open the places listed in Task 4 (5 min). Menu names depend on the brand and the Android or iOS version. Know where the search bar in Settings is.</li>
+        <li>Send the worksheet 5 minutes before the lesson and have a timer ready. Nothing else to prepare.</li>
+      </ul>
+    </div>
+    <div class="exercise">
+      <h3>Timeline</h3>
+      <table class="grid key">
+        <thead><tr><th>Time</th><th>Part</th><th>What you do</th></tr></thead>
+        <tbody>
+          <tr><td class="time">0:00 – 0:05</td><td class="task">Start</td><td>Check who is present. Students open the sheet. Point to “Before you start”.</td></tr>
+          <tr><td class="time">0:05 – 0:13</td><td class="task">Reading</td><td>Silent reading. For unknown words, students use the Key words box or a translator.</td></tr>
+          <tr><td class="time">0:13 – 0:18</td><td class="task">Task 1</td><td>True / false / not given. Students post “1 T, 2 F, …”.</td></tr>
+          <tr><td class="time">0:18 – 0:28</td><td class="task">Task 2</td><td>Is it stalkerware? Students post A–D. Use the last 3 minutes for situation D.</td></tr>
+          <tr><td class="time">0:28 – 0:40</td><td class="task">Task 3</td><td>Red flags. Students post the flag counts.</td></tr>
+          <tr><td class="time">0:40 – 1:05</td><td class="task">Task 4</td><td>Students check their own phones. You only read the chat.</td></tr>
+          <tr><td class="time">1:05 – 1:20</td><td class="task">Task 5</td><td>Help a friend. Read the messages in the chat.</td></tr>
+          <tr><td class="time">1:20 – 1:23</td><td class="task">Task 6</td><td>Each student posts one sentence.</td></tr>
+          <tr><td class="time">1:23 – 1:30</td><td class="task">Buffer</td><td>Late arrivals, overrun, language feedback.</td></tr>
+        </tbody>
+      </table>
+      <p class="small">Short of time? Cut in this order: all “+ Extra” items, Task 6, checks 5 and 6 in Task 4, the discussion of situation D. Students can finish Task 4 at home.</p>
+    </div>
+  </div>
+  <footer class="page-footer"><span>Teacher key · Lesson 17</span><span>1 / 4</span></footer>
+</div>
+
+<!-- ===== PAGE 2 ===== -->
+<div class="page">
+  <div class="page-content">
+    <div class="exercise">
+      <h3>Attendance</h3>
+      <ul class="key-list">
+        <li><strong>2 students:</strong> no changes. Both do every task. Give the extras to the faster student.</li>
+        <li><strong>3–5 students:</strong> no changes. For situation D and the extras, give each student one question and let the others reply to it. In Task 3 you can give each student two rows of the table, then everyone posts and compares.</li>
+        <li><strong>Late student:</strong> send the sheet, tell them the current task number. They skim the text and join in.</li>
+        <li><strong>No phone, or a work phone:</strong> the student does the account check at the end of Task 4.</li>
+      </ul>
+    </div>
+    <div class="exercise">
+      <h3>If a student finds something</h3>
+      <ul class="key-list">
+        <li>Students post only counts, never app names. If someone writes that they found something, reply “noted, we continue” and do not ask for details in the group.</li>
+        <li>A “Look” is not proof. VPN apps, password managers, accessibility tools, smartwatch apps and work-profile apps often appear in these lists.</li>
+        <li>Do not ask anyone to delete anything during the lesson. After class, in private, point to stopstalkerware.org. In Poland: Niebieska Linia, 800 120 002 (free, 24 hours).</li>
+      </ul>
+    </div>
+    <div class="exercise">
+      <h3>Language</h3>
+      <ul class="key-list">
+        <li>Main language: present simple for describing how things work (Tasks 1–3), imperatives and “Don't …” (Task 5), “because” for reasons, “First / Then / After that” for order. A2 students can build their Task 5 reply from the chosen options.</li>
+        <li>Do not correct during Task 4. Collect 3 or 4 mistakes that repeat in the chat and show them, without names, in the last 5 minutes.</li>
+      </ul>
+    </div>
+    <div class="exercise">
+      <h3>Task 1 — answers</h3>
+      <table class="grid key">
+        <thead><tr><th class="c" style="width:8mm;">#</th><th class="c" style="width:12mm;">Answer</th><th>Sentence in the text</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td class="c ans">T</td><td>“… the phone's location …” (what the app sends)</td></tr>
+          <tr><td class="num">2</td><td class="c ans">F</td><td>“Stalkerware is not in the official app store, so they install it from a file.”</td></tr>
+          <tr><td class="num">3</td><td class="c ans">T</td><td>“On an Android phone, they usually need the phone and the PIN for a few minutes.”</td></tr>
+          <tr><td class="num">4</td><td class="c ans">T</td><td>“On an iPhone, they sometimes need only the email and password … not the phone.”</td></tr>
+          <tr><td class="num">5</td><td class="c ans">F</td><td>“It often has no icon.” The text says often, not always.</td></tr>
+          <tr><td class="num">6</td><td class="c ans">F</td><td>“Those apps are visible, and the people who use the phone know about them.”</td></tr>
+          <tr><td class="num">7</td><td class="c ans">NG</td><td>The text gives no numbers.</td></tr>
+        </tbody>
+      </table>
+      <div class="model"><span class="label">+ Extra — model answer</span>Parental-control and work-phone apps are visible and the users know about them, but stalkerware is hidden and the owner does not know about it.</div>
+    </div>
+  </div>
+  <footer class="page-footer"><span>Teacher key · Lesson 17</span><span>2 / 4</span></footer>
+</div>
+
+<!-- ===== PAGE 3 ===== -->
+<div class="page">
+  <div class="page-content">
+    <div class="exercise">
+      <h3>Task 2 — answers</h3>
+      <table class="grid key">
+        <thead><tr><th class="c" style="width:7mm;"></th><th class="c">Owner knows?</th><th class="c">App visible?</th><th class="c">Owner agreed?</th><th class="c">Stalkerware?</th></tr></thead>
+        <tbody>
+          <tr><td class="num">A</td><td class="c yes">Y</td><td class="c yes">Y</td><td class="c yes">Y</td><td class="c no">N</td></tr>
+          <tr><td class="num">B</td><td class="c yes">Y</td><td class="c yes">Y</td><td class="c yes">Y</td><td class="c no">N</td></tr>
+          <tr><td class="num">C</td><td class="c no">N</td><td class="c no">N</td><td class="c no">N</td><td class="c yes">Y</td></tr>
+          <tr><td class="num">D</td><td class="c">discuss</td><td class="c yes">Y</td><td class="c">discuss</td><td class="c no">N</td></tr>
+        </tbody>
+      </table>
+      <p style="margin:0 0 1.5mm 0;font-size:13px;"><strong>D, question 1.</strong> It is not stalkerware: the sharing is visible and it started with consent. But it is still a problem, because Anna does not agree to it any more. Accept “knows” and “agreed” as Y or N if the student gives a reason.</p>
+      <p style="margin:0 0 1.5mm 0;font-size:13px;"><strong>D, question 2.</strong> Anna should stop sharing. iPhone: Find My → People, or Settings → Privacy &amp; Security → Safety Check. Android: Google Maps → profile picture → Location sharing. She can also tell Tom.</p>
+      <p class="extra"><b>+ Extra</b>No single right answer. Accept any reason, for example: the teenager does not know, so trust can break; or a parent is responsible for a young child.</p>
+    </div>
+    <div class="exercise">
+      <h3>Task 3 — answers</h3>
+      <table class="grid key">
+        <thead><tr><th class="c" style="width:7mm;">#</th><th>App</th><th class="c" style="width:14mm;">Flags</th><th>Which flags</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td>Maps</td><td class="c ans">0</td><td>Location matches the job.</td></tr>
+          <tr><td class="num">2</td><td>Quick Calculator</td><td class="c ans">1</td><td>F4: a calculator does not need location, microphone or SMS.</td></tr>
+          <tr><td class="num">3</td><td>WhatsApp</td><td class="c ans">0</td><td>All permissions match messaging.</td></tr>
+          <tr><td class="num">4</td><td>Wi-Fi Helper</td><td class="c ans">2</td><td>F1 (file) and F5 (notification access). Location is normal for a Wi-Fi tool, so no F4.</td></tr>
+          <tr><td class="num">5</td><td>Music Player</td><td class="c ans">0</td><td>—</td></tr>
+          <tr><td class="num">6</td><td>System Service</td><td class="c ans">5</td><td>F1 file, F2 no icon, F3 system-like name, F4 no job listed, F5 accessibility and device admin.</td></tr>
+          <tr><td class="num">7</td><td>Pocket Bank</td><td class="c ans">0</td><td>Camera matches a banking app.</td></tr>
+          <tr><td class="num">8</td><td>Weather</td><td class="c ans">0</td><td>Location matches the job.</td></tr>
+        </tbody>
+      </table>
+      <p style="margin:0 0 1.5mm 0;font-size:13px;"><strong>a)</strong> System Service (5 flags). &nbsp; <strong>b)</strong> Wi-Fi Helper and System Service.</p>
+      <p class="extra"><b>+ Extra</b>Remove the extra permissions (Settings → Apps → the app → Permissions). If it asks for them again, uninstall it.</p>
+    </div>
+  </div>
+  <footer class="page-footer"><span>Teacher key · Lesson 17</span><span>3 / 4</span></footer>
+</div>
+
+<!-- ===== PAGE 4 ===== -->
+<div class="page">
+  <div class="page-content">
+    <div class="exercise">
+      <h3>Task 4 — what normal looks like</h3>
+      <p style="margin:0 0 2mm 0;font-size:13px;">There is no key. Students post counts like “Android – 6 checks, 1 to look at”. Use this list only if a student asks what a result means.</p>
+      <table class="grid key">
+        <thead><tr><th style="width:22mm;">System</th><th>Usually normal</th></tr></thead>
+        <tbody>
+          <tr><td class="task">Android</td><td>Play Protect is on. The Accessibility and Device admin lists are empty, or contain tools the student knows (screen reader, password manager, work app). Most apps are “Not allowed” to install unknown apps; a browser or file manager may be “Allowed” if the student installs files by hand. Notification access: smartwatch or car apps.</td></tr>
+          <tr><td class="task">iPhone</td><td>Safety Check lists only people and apps the student chose. The device list shows only their own devices. Two-Factor Authentication is on. No “Profiles” section, or only a work or school profile. Find My → People shows only people the student chose.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="exercise">
+      <h3>Task 5 — answers</h3>
+      <p style="margin:0 0 2mm 0;font-size:13px;"><strong>Good advice:</strong> <span class="ans">B, C, E, F, G</span>. <strong>Not good:</strong> <span class="ans">A, D, H</span>.</p>
+      <ul class="key-list">
+        <li><strong>A.</strong> Removing the app can warn the person who watches, and it deletes the evidence. Telling him can make the situation more dangerous.</li>
+        <li><strong>D.</strong> Asking him also warns him.</li>
+        <li><strong>H.</strong> “Spy detectors” from random websites can be scams or spyware themselves.</li>
+        <li><strong>F.</strong> Good, but changing passwords can also show the person that the friend knows. This is why E (a support organisation) is on the list: it helps to plan the order. Accept any order, as long as the reset is not first.</li>
+      </ul>
+      <div class="model"><span class="label">Model reply, B1–B2</span>Don't reset your phone yet, because the app can warn him and you can lose the evidence. First, don't message anyone about this on that phone. Then use a different phone or computer to look for help, for example on stopstalkerware.org. Write down the names of the apps and the dates. After that, contact a support organisation or the police. When you have a plan, change your passwords from the safe device and turn on two-factor authentication. If you feel unsafe, call for help immediately.</div>
+      <div class="model"><span class="label">Model reply, A2</span>Don't reset the phone. Use another phone. Write down the app names. Call the police or a support organisation. Then change your passwords.</div>
+    </div>
+    <div class="exercise">
+      <h3>Task 6</h3>
+      <p style="margin:0;font-size:13px;">No key. Check the pattern: <em>This week I will turn on two-factor authentication.</em> (will + base verb).</p>
+      <p class="small">The menu paths in Task 4 and the advice in Task 5 come from published guides (Google, Apple, Coalition Against Stalkerware). Menus change with each phone brand and version, so test them on your own phone before the lesson.</p>
+    </div>
+  </div>
+  <footer class="page-footer"><span>Teacher key · Lesson 17</span><span>4 / 4</span></footer>
+</div>
+
+</body>
+</html>
