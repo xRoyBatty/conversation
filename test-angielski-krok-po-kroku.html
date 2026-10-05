@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Test z angielskiego krok po kroku</title>
+<style>
+:root{
+  --bg:#f4f6fb;--card:#fff;--ink:#1b2130;--muted:#566075;--line:#dde2ec;
+  --brand:#2f50c9;--brand-ink:#fff;--brand-bg:#e6ecff;
+  --help:#0b6f6a;--help-bg:#dff3f1;
+  --ok:#17692f;--ok-bg:#e3f5e8;
+  --bad:#a8231b;--bad-bg:#fdeceb;
+  --hint:#6b4f00;--hint-bg:#fff4d1;
+  --mark:#ffe58a;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#12151d;--card:#1b202c;--ink:#eef1f8;--muted:#a6b0c4;--line:#2d3445;
+  --brand:#8aa2ff;--brand-ink:#0d1330;--brand-bg:#232c55;
+  --help:#5fd6cd;--help-bg:#0f3230;
+  --ok:#78e097;--ok-bg:#12321d;
+  --bad:#ff9a90;--bad-bg:#3b1a18;
+  --hint:#ffd67a;--hint-bg:#37300f;
+  --mark:#6a5a12;
+}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px}
+.top-in{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.brand{font-weight:700;font-size:15px;white-space:nowrap}
+.bar{flex:1;height:10px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--brand);transition:width .3s}
+.count{font-size:14px;color:var(--muted);white-space:nowrap}
+.menu{font:inherit;font-size:14px;background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 10px;cursor:pointer}
+main{max-width:720px;margin:0 auto;padding:16px 16px 48px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;outline:none}
+h1{font-size:22px;line-height:1.3;margin:4px 0 12px}
+h2{font-size:18px;margin:20px 0 8px}
+p{margin:8px 0}
+.muted{color:var(--muted)}.small{font-size:15px}
+.tag{display:inline-block;font-size:14px;font-weight:700;padding:4px 12px;border-radius:99px;margin-bottom:8px}
+.tag.help{background:var(--help-bg);color:var(--help)}
+.tag.test{background:var(--brand-bg);color:var(--brand)}
+.ctx{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:12px 0}
+.ctx .lbl{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 0 4px}
+.sent{font-size:22px;line-height:1.8;margin:4px 0}
+.qline{font-size:20px;margin:12px 0 8px}
+.gap{display:inline-block;min-width:4.4em;border-bottom:3px solid var(--brand);text-align:center;padding:0 6px;font-weight:700;color:var(--ok)}
+.gap.later{color:var(--muted);border-bottom-style:dashed;border-color:var(--line)}
+.gap.cur{background:var(--brand-bg)}
+.gap.done{color:var(--ok);border-bottom-color:var(--ok)}
+.read{position:relative;font-size:16.5px;line-height:1.6;max-height:300px;overflow:auto}
+.read p{margin:0 0 10px}
+.ev{border-radius:4px}
+[data-ev="1"] .ev[data-e="1"],[data-ev="2"] .ev[data-e="2"],[data-ev="3"] .ev[data-e="3"],[data-ev="4"] .ev[data-e="4"],[data-ev="5"] .ev[data-e="5"]{background:var(--mark)}
+.dlg p{margin:6px 0;font-size:18px}
+.who{display:inline-block;width:1.6em;font-weight:700;color:var(--brand)}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--brand);color:var(--brand-ink);border:2px solid var(--brand);border-radius:12px;padding:12px 22px;font-weight:700;min-height:48px}
+.btn.sec{background:transparent;color:var(--brand)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.opts{margin:8px 0}
+.opt{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:10px 14px;margin:8px 0;min-height:52px}
+.opt .l{flex:none;width:30px;height:30px;border-radius:50%;background:var(--line);display:grid;place-items:center;font-weight:700;font-size:14px}
+.opt:hover:not(:disabled){border-color:var(--brand)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--muted)}
+.opt.wrong .t{text-decoration:line-through}
+.opt.right{border-color:var(--ok);background:var(--ok-bg)}
+.bank{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.chip{background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:8px 14px;font-size:19px;min-height:46px}
+.chip:hover:not(:disabled){border-color:var(--brand)}
+.chip.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--muted);text-decoration:line-through}
+.chip.right,.chip.ok{border-color:var(--ok);background:var(--ok-bg)}
+.chip.bad{border-color:var(--bad);background:var(--bad-bg)}
+.chip.static{border-style:dashed;cursor:default;min-height:0;padding:4px 10px;font-size:17px}
+.build{min-height:64px;border:2px dashed var(--line);border-radius:12px;padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.build:empty::before{content:"Dotykaj wyrazów poniżej po kolei";color:var(--muted);font-size:15px;padding:0 6px}
+.gi,.gs{font:inherit;font-weight:700;padding:4px 8px;border:2px solid var(--brand);border-radius:8px;background:var(--card);color:var(--ink);max-width:100%}
+.gi{width:11em}
+.gi.ok,.gs.ok{border-color:var(--ok);background:var(--ok-bg)}
+.gi.bad,.gs.bad{border-color:var(--bad);background:var(--bad-bg)}
+.gline{font-size:20px;line-height:2.3;margin:6px 0}
+.fb{margin-top:14px;padding:12px 14px;border-radius:12px;border-left:6px solid;font-size:17px}
+.fb.ok{background:var(--ok-bg);border-color:var(--ok)}
+.fb.bad{background:var(--bad-bg);border-color:var(--bad)}
+.fb.hint{background:var(--hint-bg);border-color:var(--hint)}
+.fb.info{background:var(--brand-bg);border-color:var(--brand)}
+.fb b.h{display:block;margin-bottom:2px}
+.plain{margin:8px 0;padding-left:22px}
+input.name{font:inherit;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);width:100%;max-width:340px}
+details{margin-top:18px}summary{cursor:pointer;color:var(--brand);font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}
+td.n{text-align:center;white-space:nowrap}
+textarea.rep{width:100%;min-height:150px;font:14px/1.4 ui-monospace,Menlo,Consolas,monospace;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px}
+.score{font-size:40px;font-weight:800;margin:4px 0}
+.rev{border-left:4px solid var(--help);padding:2px 0 2px 12px;margin:10px 0}
+@media (max-width:480px){body{font-size:17px}.card{padding:16px}.brand{display:none}.sent{font-size:20px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <span class="brand">Test z angielskiego</span>
+    <div class="bar" role="progressbar" aria-label="Postęp" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="barfill"></i></div>
+    <span class="count" id="count"></span>
+    <button class="menu" id="menu" type="button">Menu</button>
+  </div>
+</header>
+<main id="app"></main>
+
+<script>
+/* ===== Dane testu ===== */
+const BANK1=['ears','face','fair','glasses','nosy','teeth'];
+const BANK8=['can','course','no','sorry','sure'];
+const BANK11=['always','day','often','the moment','this photo'];
+
+/* Pytanie pomocnicze: poprawna odpowiedź jest wstawiana na zmieniającą się pozycję. */
+let dc=0;
+const D=(q,ok,bad,why)=>{const n=bad.length+1,p=(dc++*5+2)%n,o=bad.slice();o.splice(p,0,ok);return{q,opts:o,a:p,why}};
+const T=(...a)=>({k:'t',a});
+const SEL=a=>({k:'s',a});
+
+const READING=
+`<p>My friend Gabe sends me messages when it's morning for him. He lives in California now, so it's morning for him when it's early evening for me. This is his last message: ‘Hello, Josh. <span class="ev" data-e="1">Our teacher is ill and there isn't another teacher for us, so we're having fun in class.</span> <span class="ev" data-e="2">Some boys are watching a film on a tablet – a scary one.</span> Some girls are singing – badly! <span class="ev" data-e="3">One girl is studying – she's a good student.</span>’</p>
+<p>I like hearing about what Gabe's doing at school. He's my best friend. I miss him a lot, but it's OK because he sends messages every day and at weekends we have a video call. I live in London. Gabe usually lives in London, but <span class="ev" data-e="4">his parents are working in California for two years.</span> Gabe's parents often travel to different places for work and Gabe goes with them. One good thing is that I sometimes visit him. <span class="ev" data-e="5">My parents say I can go and stay with Gabe in the summer, so I'm very excited about that!</span></p>`;
+
+const DIALOG=[
+  ['A',`Hi, welcome to Ted's café!`],
+  ['B',`Hi. Is it OK if I sit at that table?`],
+  ['A',`{1}. Go right ahead. So, what are you having today?`],
+  ['B',`{2} I have a chocolate milkshake, please?`],
+  ['A',`I'm {3}, no. I haven't got milkshakes. I've got orange juice.`],
+  ['B',`OK … an orange juice, please.`],
+  ['A',`Of {4}! Anything to eat?`],
+  ['B',`Um, could I have a chocolate cake, please?`],
+  ['A',`{5} problem.`]
+];
+const DIALOG_ANS={1:'sure',2:'can',3:'sorry',4:'course',5:'no'};
+const DIALOG_CAP={1:1,2:1,5:1};
+
+const SECTIONS=[
+/* ---------- Zadanie 1 ---------- */
+{num:1,name:'Vocabulary',instr:'Uzupełnij zdania wyrazami z ramki.',note:'Dotknij wyrazu z ramki, który pasuje do luki. Jeden wyraz z ramki nie pasuje do żadnego zdania.',items:[
+ {topic:'Zęby: teeth',
+  diag:D(`Co znaczy słowo <b>smile</b>?`,'uśmiech',['smutek','mapa'],`<b>smile</b> = uśmiech. Gdy ktoś się szeroko uśmiecha (<b>big smile</b>), widać jego zęby.`),
+  main:{type:'choice',chips:true,stem:`Emma has got a big smile – you can see all her ___.`,opts:BANK1,a:'teeth',why:`<b>teeth</b> = zęby (liczba mnoga; jeden ząb to <b>tooth</b>). Gdy ktoś się uśmiecha, widać zęby.`}},
+ {topic:'Włosy: fair hair (jasne włosy)',
+  diag:D(`W zdaniu jest: „black hair, <b>but</b> I've got … hair”. Słowo <b>but</b> znaczy „ale”. Co z tego wynika?`,'moje włosy są inne niż czarne',['moje włosy też są czarne','moje włosy są krótkie'],`<b>but</b> = ale. Po „ale” mówimy coś przeciwnego. Siostra ma czarne włosy, więc ja mam włosy jasne – po angielsku <b>fair</b>.`),
+  main:{type:'choice',chips:true,stem:`My sister has got black hair, but I've got ___ hair.`,opts:BANK1,a:'fair',why:`<b>fair hair</b> = jasne włosy (blond). Czarne i jasne to przeciwieństwa – dlatego w zdaniu jest <b>but</b>.`}},
+ {topic:'Twarz: face',
+  diag:D(`Co znaczy słowo <b>pretty</b>?`,'ładny',['brzydki','smutny'],`<b>pretty</b> = ładny. <b>beautiful</b> = piękny. Mówimy komuś miłe rzeczy o jego wyglądzie.`),
+  main:{type:'choice',chips:true,stem:`You've got a pretty ___. I think you're beautiful.`,opts:BANK1,a:'face',why:`<b>face</b> = twarz. <b>pretty face</b> = ładna twarz. Gdy mówimy „jesteś piękna”, chwalimy twarz.`}},
+ {topic:'Powiedzenie: I\'m all ears',
+  diag:D(`Co znaczy zdanie <b>Tell me about your day</b>?`,'Opowiedz mi o swoim dniu.',['Powiedz mi, jaki dziś jest dzień tygodnia.','Narysuj swój dzień.'],`<b>Tell me</b> = powiedz mi. <b>about your day</b> = o twoim dniu. Ktoś chce posłuchać, jak minął ci dzień.`),
+  main:{type:'choice',chips:true,stem:`Tell me about your day – I'm all ___.`,opts:BANK1,a:'ears',why:`<b>I'm all ears</b> to powiedzenie: „słucham z uwagą”. Słuchamy uszami – <b>ears</b>.`}},
+ {topic:'Okulary: glasses; czasownik wear',
+  diag:D(`Co znaczy czasownik <b>wear</b> w zdaniu „Mum <b>wears</b> …”?`,'nosi na sobie',['kupuje','myje'],`<b>wear</b> = nosić na sobie (ubranie, okulary, zegarek). <b>She wears a hat</b> = Ona nosi kapelusz.`),
+  main:{type:'choice',chips:true,stem:`Mum wears ___ when she reads.`,opts:BANK1,a:'glasses',why:`<b>glasses</b> = okulary. Okulary nosi się na nosie np. do czytania. (<b>nosy</b> znaczy „wścibski” i tu nie pasuje.)`}}
+]},
+/* ---------- Zadanie 2 ---------- */
+{num:2,name:'Vocabulary',instr:'Wybierz poprawne uzupełnienia zdań.',note:'Przy każdym zdaniu są dwie odpowiedzi: a i b. Dotknij tej, która pasuje.',items:[
+ {topic:'Słownik: dictionary',
+  diag:D(`Co znaczy zdanie <b>I don't know what this word means</b>?`,'Nie wiem, co znaczy to słowo.',['Nie lubię tego słowa.','Nie umiem tego przeczytać.'],`<b>mean</b> = znaczyć. <b>what this word means</b> = co to słowo znaczy. Takie rzeczy sprawdzamy w specjalnej książce.`),
+  main:{type:'choice',stem:`Can I use that ___, please? I don't know what this word means.`,opts:['bookshelf','dictionary'],a:'dictionary',why:`<b>dictionary</b> = słownik. W słowniku sprawdzamy znaczenie słów. <b>bookshelf</b> to półka na książki.`}},
+ {topic:'Zegar i godziny: clock',
+  diag:D(`W zdaniu jest <b>it's only 10.25</b>. Co oznacza liczba 10.25?`,'godzinę (10:25)',['cenę (10 zł 25 gr)','numer klasy'],`W angielskim godzinę często zapisujemy z kropką: <b>10.25</b> = <b>ten twenty-five</b> (dziesiąta dwadzieścia pięć). <b>only</b> = dopiero.`),
+  main:{type:'choice',stem:`The class isn't finished. Look at the ___ – it's only 10.25.`,opts:['clock','interactive whiteboard'],a:'clock',why:`<b>clock</b> = zegar. Patrzymy na zegar, żeby sprawdzić godzinę. <b>interactive whiteboard</b> to tablica interaktywna.`}},
+ {topic:'Biblioteka: library',
+  diag:D(`Co znaczy <b>Be quiet!</b>?`,'Bądź cicho!',['Bądź grzeczny!','Bądź szybki!'],`<b>quiet</b> = cichy. <b>Be quiet!</b> = Bądź cicho! Są miejsca, w których nie wolno głośno rozmawiać.`),
+  main:{type:'choice',stem:`Be quiet! You can't talk in the ___.`,opts:['library','playground'],a:'library',why:`<b>library</b> = biblioteka. Tam trzeba być cicho. <b>playground</b> = plac zabaw / boisko – tam można hałasować.`}},
+ {topic:'Kosz: bin; rzutnik: projector',
+  diag:D(`Co znaczy słowo <b>projector</b>?`,'rzutnik (projektor)',['kosz na śmieci','plecak'],`<b>projector</b> = rzutnik. Pokazuje obraz na ścianie lub ekranie. Zeszytu się do niego nie wkłada.`),
+  main:{type:'choice',stem:`Is that your homework, Jed? Why is it in the ___?`,opts:['projector','bin'],a:'bin',why:`<b>bin</b> = kosz na śmieci. Nauczyciel jest zdziwiony: dlaczego praca domowa leży w koszu?`}},
+ {topic:'Podręcznik: coursebook',
+  diag:D(`Co znaczy zdanie <b>Please open your … to page 35</b>?`,'Otwórzcie … na stronie 35.',['Zamknijcie … na stronie 35.','Kupcie … za 35 zł.'],`<b>open</b> = otworzyć, <b>page</b> = strona. <b>to page 35</b> = na stronie 35. Strony mają książki.`),
+  main:{type:'choice',stem:`OK, class. Please open your ___ to page 35.`,opts:['tablet','coursebook'],a:'coursebook',why:`<b>coursebook</b> = podręcznik. Otwieramy go na stronie 35. Tablet ma ekran, a nie strony.`}}
+]},
+/* ---------- Zadanie 3 ---------- */
+{num:3,name:'Grammar',instr:'Ułóż wyrazy w odpowiedniej kolejności, tak aby powstały poprawne zdania.',note:'Dotykaj wyrazów po kolei. Dotknięty wyraz w zdaniu wraca na dół, jeśli go dotkniesz jeszcze raz.',items:[
+ {topic:'Szyk zdania: give me money',
+  diag:D(`Które wyrażenie jest poprawne? („dać mi pieniądze”)`,'give me money',['give money me','me give money'],`Najpierw czasownik <b>give</b>, potem komu (<b>me</b>), potem co (<b>money</b>): <b>give me money</b>. Całe zdanie: <b>My parents</b> (kto) + <b>give</b> (co robią) + <b>me</b> (komu) + <b>money</b> (co).`),
+  main:{type:'order',words:['morning','My','me','give','parents','every','money'],ans:['My','parents','give','me','money','every','morning'],hint:`Zacznij od <b>My parents</b>. Potem czasownik <b>give</b>. Na końcu: kiedy? <b>every morning</b>.`,why:`Kolejność: kto (<b>My parents</b>) → co robią (<b>give</b>) → komu (<b>me</b>) → co (<b>money</b>) → kiedy (<b>every morning</b>).`}},
+ {topic:'Szyk zdania: podmiot + czasownik',
+  diag:D(`Które z tych słów jest czasownikiem (mówi, co robimy)?`,'like',['science','your'],`<b>like</b> = lubić. To słowo mówi, co robisz. Zdanie zwykle ma kolejność: kto (<b>You</b>) + czasownik (<b>like</b>) + reszta.`),
+  main:{type:'order',words:['science','You','your','lessons','like'],ans:['You','like','your','science','lessons'],hint:`Zacznij od <b>You</b>. Zaraz po nim wstaw czasownik <b>like</b>.`,why:`<b>You</b> (kto) + <b>like</b> (lubisz) + <b>your science lessons</b> (twoje lekcje przyrody). <b>your</b> stoi przed tym, co należy do ciebie.`}},
+ {topic:'Przeczenie: doesn\'t + czasownik bez -s',
+  diag:D(`Które zdanie jest poprawne?`,`She doesn't give`,[`She doesn't gives`,`She don't give`],`Po <b>he / she / it</b> w przeczeniu używamy <b>doesn't</b>, a czasownik jest bez -s: <b>doesn't give</b>. Nie piszemy „doesn't gives”.`),
+  main:{type:'order',words:['homework','lot','of','a','She','us',`doesn't give`,'maths'],ans:['She',`doesn't give`,'us','a','lot','of','maths','homework'],hint:`Zacznij od <b>She doesn't give</b>. Potem komu? <b>us</b>. Potem ile? <b>a lot of</b>.`,why:`<b>She</b> (kto) + <b>doesn't give</b> (nie daje) + <b>us</b> (nam) + <b>a lot of</b> (dużo) + <b>maths homework</b> (pracy domowej z matematyki).`}},
+ {topic:'Przyimek on + dzień tygodnia',
+  diag:D(`Z dniami tygodnia (np. <b>Wednesdays</b>) używamy przyimka:`,'on',['in','at'],`<b>on</b> + dzień tygodnia: <b>on Monday</b>, <b>on Wednesdays</b> (w środy). <b>in</b> jest np. do miesięcy: <b>in May</b>.`),
+  main:{type:'order',words:['Wednesdays','library','the','I','to',`don't go`,'on'],ans:['I',`don't go`,'to','the','library','on','Wednesdays'],hint:`Zacznij od <b>I don't go</b>. Potem dokąd? <b>to the library</b>. Na końcu: kiedy? <b>on Wednesdays</b>.`,why:`<b>I</b> (kto) + <b>don't go</b> (nie chodzę) + <b>to the library</b> (do biblioteki) + <b>on Wednesdays</b> (w środy).`}},
+ {topic:'Pytanie z is',
+  diag:D(`W pytaniu „Czy ten pies jest przyjazny?” słowo <b>Is</b> stoi:`,'na początku zdania',['w środku zdania','na końcu zdania'],`W pytaniu z <b>is / are / am</b> zaczynamy od tego słowa: <b>Is that dog friendly?</b> Nie: „That dog is friendly?”.`),
+  main:{type:'order',words:['that','Is','friendly','dog','?'],ans:['Is','that','dog','friendly','?'],hint:`Pytanie zaczyna się od <b>Is</b>. Na końcu stoi znak <b>?</b>.`,why:`<b>Is</b> (pytanie) + <b>that dog</b> (ten pies) + <b>friendly</b> (przyjazny) + <b>?</b>.`}}
+]},
+/* ---------- Zadanie 4 ---------- */
+{num:4,name:'Grammar',instr:'Uzupełnij zdania wyrazami podanymi w nawiasach w formie czasu present continuous.',note:'Wzór: <b>am / is / are</b> + czasownik z końcówką <b>-ing</b>. Wpisz tylko to, czego brakuje w luce.',items:[
+ {topic:'Present continuous: am / is / are',
+  diag:D(`Które słowo pasuje do <b>We</b> w present continuous (am / is / are + czasownik-ing)?`,'are',['is','am'],`<b>I</b> → am; <b>he / she / it</b> → is; <b>we / you / they</b> → are. „We” to kilka osób, więc: <b>We are learning</b>.`),
+  main:{type:'gaps',parts:['We ',T('are learning',`'re learning`,'re learning'),' (learn) about Asia this month.'],hint:`Wzór: am / is / are + czasownik-ing. Dla <b>We</b> bierzemy <b>are</b>.`,why:`<b>We</b> + <b>are</b> + <b>learning</b> (learn + ing). Wzór: am / is / are + czasownik-ing.`}},
+ {topic:'Dopisywanie -ing: studying',
+  diag:D(`Jak dodajemy <b>-ing</b> do czasownika <b>study</b>?`,'studying',['studing','studdying'],`<b>study + ing = studying</b>. Przy „study” nic nie odrzucamy ani nie podwajamy – po prostu dopisujemy <b>-ing</b>.`),
+  main:{type:'gaps',parts:['My brother ',T('is studying',`'s studying`,'s studying'),' (study) abroad this year.'],hint:`<b>My brother</b> = he, więc potrzebne jest <b>is</b>. Dalej: <b>study + ing</b>.`,why:`<b>My brother</b> = he → <b>is</b>. <b>study + ing = studying</b>. Razem: <b>is studying</b>.`}},
+ {topic:'Present continuous: pytanie',
+  diag:D(`W pytaniu w present continuous słowo <b>am / is / are</b> stawiamy:`,'przed osobą (Is Leon …?)',['po osobie (Leon is …?)','na końcu zdania'],`W pytaniu zamieniamy miejsca: nie „Leon is having”, tylko <b>Is Leon having</b>…? Słowo <b>is</b> idzie na początek.`),
+  main:{type:'gaps',parts:[T('is leon having'),' (Leon / have) lunch at the moment?'],hint:`Zacznij od <b>Is</b>. Potem <b>Leon</b>. Potem <b>have + ing</b> (przy have gubimy „e”).`,why:`<b>Is</b> + <b>Leon</b> + <b>having</b>. <b>have → having</b> (gubimy „e”). Całe pytanie: <b>Is Leon having lunch at the moment?</b>`}},
+ {topic:'Present continuous: przeczenie (they)',
+  diag:D(`Które zdanie jest poprawne? (przeczenie w present continuous)`,`They aren't playing`,[`They don't playing`,`They not playing`],`Przeczenie: <b>am / is / are + not + czasownik-ing</b>. Dla <b>they</b> to <b>aren't</b> (= are not). Nie łączymy „don't” z -ing.`),
+  main:{type:'gaps',parts:['My friends ',T(`aren't playing`,'are not playing','arent playing'),' (not play) tennis this afternoon.'],hint:`<b>My friends</b> = they → <b>are</b>. Z „not”: <b>aren't</b> + playing.`,why:`<b>My friends</b> = they → <b>are not (aren't)</b> + <b>playing</b>.`}},
+ {topic:'Present continuous: przeczenie (it)',
+  diag:D(`Do <b>My tablet</b> (jedna rzecz = it) w przeczeniu pasuje:`,`isn't`,[`aren't`,`don't`],`<b>tablet</b> = it (jedna rzecz) → <b>is</b>. Przeczenie: <b>is not = isn't</b>. <b>aren't</b> jest dla we / you / they, a <b>don't</b> nie łączymy z -ing.`),
+  main:{type:'gaps',parts:['My tablet ',T(`isn't working`,'is not working','isnt working'),' (not work) again.'],hint:`<b>tablet</b> = it → <b>is</b>. Z „not”: <b>isn't</b> + working.`,why:`<b>My tablet</b> = it → <b>is not (isn't)</b> + <b>working</b> (work + ing).`}}
+]},
+/* ---------- Zadanie 5 ---------- */
+{num:5,name:'Grammar',instr:'Wybierz poprawne uzupełnienia zdań.',note:'Present simple (zwyczaje) albo present continuous (to, co dzieje się teraz). Dotknij poprawnej odpowiedzi.',items:[
+ {topic:'Present simple: zwyczaje (often)',
+  diag:D(`Słowo <b>often</b> znaczy „często”. Mówi ono o czymś, co:`,'zdarza się regularnie (zwyczaj)',['dzieje się właśnie teraz'],`<b>often, usually, always, every day</b> mówią o zwyczajach, czyli o rzeczach powtarzanych. Do zwyczajów używamy <b>present simple</b> (I eat, she drives).`),
+  main:{type:'choice',stem:`I ___ in the morning.`,opts:[`don't often eat`,`am not often eating`],a:`don't often eat`,why:`<b>often</b> → zwyczaj → present simple: <b>I don't often eat</b>. <b>am not eating</b> mówiłoby o tym, co dzieje się teraz.`}},
+ {topic:'Present continuous: to, co dzieje się teraz',
+  diag:D(`W zdaniu <b>He … really well in this race!</b> komentujemy wyścig. Wyścig dzieje się:`,'teraz, na naszych oczach',['zawsze, co dzień'],`<b>in this race!</b> – ten wyścig trwa teraz. O tym, co dzieje się teraz, mówimy w <b>present continuous</b>: <b>is doing</b>.`),
+  main:{type:'choice',stem:`He ___ really well in this race!`,opts:['does','is doing'],a:'is doing',why:`Wyścig trwa teraz → present continuous: <b>He is doing really well in this race!</b>`}},
+ {topic:'Present continuous: now',
+  diag:D(`Co znaczy <b>now</b>?`,'teraz',['zawsze','wczoraj'],`<b>now</b> = teraz. Gdy mówimy o tym, co dzieje się teraz, używamy <b>present continuous</b> (<b>Are you playing?</b>).`),
+  main:{type:'choice',stem:`What ___ now? Can I play?`,opts:['do you play','are you playing'],a:'are you playing',why:`<b>now</b> = teraz → present continuous: <b>What are you playing now?</b> Pytanie: <b>are + you + playing</b>.`}},
+ {topic:'Present continuous: at the moment',
+  diag:D(`Co znaczy <b>at the moment</b>?`,'w tej chwili',['w każdy weekend','w zeszłym roku'],`<b>at the moment</b> = w tej chwili, teraz. To znak dla <b>present continuous</b>.`),
+  main:{type:'choice',stem:`They ___ to music at the moment.`,opts:[`aren't listening`,`don't listen`],a:`aren't listening`,why:`<b>at the moment</b> = teraz → present continuous: <b>aren't listening</b> (are not + listening).`}},
+ {topic:'Present simple: usually + czasownik z -s',
+  diag:D(`My mum <b>usually</b> … me to school <b>in the mornings</b>. Które słowo pokazuje, że to dzieje się regularnie?`,'usually',['me','school'],`<b>usually</b> = zwykle. <b>in the mornings</b> = rano (każdego dnia). Rzeczy regularne to <b>present simple</b>.`),
+  main:{type:'choice',stem:`My mum usually ___ me to school in the mornings.`,opts:['is driving','drives'],a:'drives',why:`<b>usually</b> → zwyczaj → present simple. Po <b>he / she / it</b> dodajemy <b>-s</b>: <b>My mum drives</b>.`}}
+]},
+/* ---------- Zadanie 6 ---------- */
+{num:6,name:'Reading',instr:'Przeczytaj tekst i odpowiedz na pytania.',note:'Pod tekstem jest pytanie i trzy odpowiedzi. Wybierz tę, która zgadza się z tekstem. Jeśli się pomylisz, w tekście podświetli się miejsce z odpowiedzią.',items:[
+ {topic:'Czytanie: ill, so (dlatego)',
+  diag:D(`Co znaczy słowo <b>ill</b>?`,'chory',['zły','spóźniony'],`<b>ill</b> = chory. <b>Our teacher is ill</b> = Nasz nauczyciel jest chory.`),
+  main:{type:'choice',ctx:'reading',ev:1,q:`Why are the students in Gabe's class having fun?`,opts:[`Because their teacher is ill and there isn't another teacher.`,`Because they are watching a film on a tablet.`,`Because Gabe's parents are in California.`],a:`Because their teacher is ill and there isn't another teacher.`,why:`W tekście: „Our teacher is ill and there isn't another teacher for us, <b>so</b> we're having fun”. <b>so</b> = więc / dlatego. Powód (nauczyciel jest chory) jest przed „so”.`}},
+ {topic:'Czytanie: boys / girls, scary',
+  diag:D(`Znajdź w tekście: kto ogląda film na tablecie?`,'Some boys',['Some girls','One girl'],`W tekście: „<b>Some boys</b> are watching a film on a tablet”. <b>boys</b> = chłopcy, <b>girls</b> = dziewczynki.`),
+  main:{type:'choice',ctx:'reading',ev:2,q:`What type of film are the boys watching?`,opts:[`A funny one.`,`A scary one.`,`A boring one.`],a:`A scary one.`,why:`W tekście: „a film on a tablet – <b>a scary one</b>”. <b>scary</b> = straszny. <b>What type of film</b> = jaki rodzaj filmu.`}},
+ {topic:'Czytanie: study, one / some',
+  diag:D(`Co znaczy <b>studying</b>?`,'uczy się',['śpiewa','ogląda film'],`<b>study</b> = uczyć się. <b>One girl is studying</b> = Jedna dziewczynka się uczy.`),
+  main:{type:'choice',ctx:'reading',ev:3,q:`How many students are studying?`,opts:[`Some boys.`,`Everyone.`,`One girl.`],a:`One girl.`,why:`W tekście: „<b>One girl</b> is studying”. <b>How many</b> = ile. Chłopcy oglądają film, a dziewczynki śpiewają.`}},
+ {topic:'Czytanie: for two years',
+  diag:D(`Co znaczy <b>for two years</b>?`,'przez dwa lata',['dwa lata temu','za dwa lata'],`<b>for</b> + czas = przez jakiś czas: <b>for two years</b> = przez dwa lata, <b>for a week</b> = przez tydzień.`),
+  main:{type:'choice',ctx:'reading',ev:4,q:`How long is Gabe staying in California?`,opts:[`For two years.`,`For two weeks.`,`For the summer.`],a:`For two years.`,why:`W tekście: „his parents are working in California <b>for two years</b>”. Gabe jest tam z rodzicami. <b>How long</b> = jak długo.`}},
+ {topic:'Czytanie: excited, so',
+  diag:D(`Co znaczy <b>excited</b>?`,'podekscytowany (bardzo się cieszy)',['smutny','zmęczony'],`<b>excited</b> = podekscytowany, bardzo się cieszy na coś.`),
+  main:{type:'choice',ctx:'reading',ev:5,q:`Why is Josh excited?`,opts:[`Because Gabe sends him messages every day.`,`Because his parents are working in California.`,`Because he can go and stay with Gabe in the summer.`],a:`Because he can go and stay with Gabe in the summer.`,why:`W tekście: „My parents say I can go and stay with Gabe in the summer, <b>so</b> I'm very excited”. Powód jest przed „so”: może jechać do Gabe'a latem.`}}
+]},
+/* ---------- Zadanie 8 ---------- */
+{num:8,name:'Speaking',instr:'Uzupełnij dialog wyrazami z ramki.',note:'To rozmowa w kawiarni. Dotknij wyrazu, który pasuje do podświetlonej luki. Każdy wyraz pasuje tylko raz.',items:[
+ {topic:'Zgoda: Sure',
+  diag:D(`Kelner mówi: „… <b>Go right ahead</b>.” Co znaczy <b>Go right ahead</b>?`,'Proszę bardzo, śmiało.',['Nie, nie wolno.','Poczekaj chwilę.'],`<b>Go right ahead</b> = proszę bardzo, śmiało. To zgoda. Więc na początku musi paść „tak”: <b>Sure.</b> (Jasne!)`),
+  main:{type:'choice',chips:true,ctx:'dialogue',n:1,opts:BANK8,a:'sure',why:`<b>Sure</b> = jasne, pewnie. To zgoda na pytanie „Is it OK if I sit at that table?”. <b>no</b> i <b>sorry</b> byłyby odmową.`}},
+ {topic:'Prośba: Can I have …, please?',
+  diag:D(`Co znaczy <b>Can I have a chocolate milkshake, please?</b>`,'Czy mogę prosić czekoladowy koktajl?',['Mam czekoladowy koktajl.','Lubię czekoladowe koktajle.'],`<b>Can I have …, please?</b> = Czy mogę prosić o …? Tak grzecznie prosimy o coś w kawiarni. <b>can</b> = móc.`),
+  main:{type:'choice',chips:true,ctx:'dialogue',n:2,opts:BANK8,a:'can',why:`<b>Can I have …, please?</b> – tak grzecznie prosimy o coś. <b>can</b> = móc.`}},
+ {topic:'Grzeczna odmowa: I\'m sorry, no',
+  diag:D(`Co znaczy <b>I haven't got milkshakes</b>?`,'Nie mamy koktajli.',['Mamy koktajle.','Lubię koktajle.'],`<b>haven't got</b> = nie mam. Kelner odmawia, więc grzecznie mówi „przepraszam”: <b>I'm sorry, no.</b>`),
+  main:{type:'choice',chips:true,ctx:'dialogue',n:3,opts:BANK8,a:'sorry',why:`<b>I'm sorry</b> = przepraszam, mi przykro. Tak grzecznie odmawiamy: <b>I'm sorry, no.</b>`}},
+ {topic:'Zgoda: Of course!',
+  diag:D(`Co znaczy <b>Anything to eat?</b>`,'Coś do jedzenia?',['Coś do picia?','Gdzie jest jedzenie?'],`<b>eat</b> = jeść. <b>Anything to eat?</b> = Coś do jedzenia? Kelner zgadza się na sok i pyta dalej.`),
+  main:{type:'choice',chips:true,ctx:'dialogue',n:4,opts:BANK8,a:'course',why:`<b>Of course!</b> = oczywiście! Kelner zgadza się na sok pomarańczowy. Słowo <b>course</b> stoi w wyrażeniu <b>of course</b>.`}},
+ {topic:'No problem = nie ma sprawy',
+  diag:D(`Co znaczy <b>No problem</b>?`,'Nie ma sprawy.',['Mam problem.','Nie rozumiem.'],`<b>No problem</b> = nie ma problemu, nie ma sprawy. Tak mówimy, gdy chętnie coś robimy.`),
+  main:{type:'choice',chips:true,ctx:'dialogue',n:5,opts:BANK8,a:'no',why:`<b>No problem</b> = nie ma sprawy. Kelner zgadza się podać ciasto czekoladowe.`}}
+]},
+/* ---------- Zadanie 10 (Extra) ---------- */
+{num:10,name:'Extra',instr:'Uzupełnij zdania.',note:'Dotknij słowa, które pasuje do luki.',items:[
+ {topic:'Its = jego (o zwierzęciu); mouth',
+  diag:D(`W zdaniu <b>The dog has got something in its …</b> słowo <b>its</b> znaczy:`,'jego (psa)',['moje','jej (nauczycielki)'],`<b>its</b> = jego / jej, gdy mówimy o zwierzęciu lub rzeczy. <b>its …</b> = „w jego …” – czyli w czymś, co należy do psa.`),
+  main:{type:'choice',stem:`The dog has got something in its ___ – it's a ball!`,opts:['ears','mouth','hair'],a:'mouth',why:`<b>mouth</b> = buzia, pysk. Pies niesie piłkę w pysku. W uszach ani we włosach piłki się nie nosi.`}},
+ {topic:'Plakaty i tablica ogłoszeń: noticeboard',
+  diag:D(`Co znaczy słowo <b>poster</b>?`,'plakat',['okno','kosz'],`<b>poster</b> = plakat. Plakaty o klubach szkolnych wiszą na specjalnej tablicy.`),
+  main:{type:'choice',stem:`We're looking at the posters for school clubs on the ___.`,opts:['bin','coursebook','noticeboard'],a:'noticeboard',why:`<b>noticeboard</b> = tablica ogłoszeń. Wiszą na niej plakaty i informacje.`}},
+ {topic:'Gabinet pielęgniarki: medical room',
+  diag:D(`Co znaczy <b>when we feel ill</b>?`,'gdy źle się czujemy (jesteśmy chorzy)',['gdy jesteśmy szczęśliwi','gdy jesteśmy głodni'],`<b>feel</b> = czuć się, <b>ill</b> = chory. Gdy ktoś źle się czuje, idzie do pielęgniarki.`),
+  main:{type:'choice',stem:`Mrs Green works in the ___ at school. She helps us when we feel ill.`,opts:['library','playground','medical room'],a:'medical room',why:`<b>medical room</b> = gabinet pielęgniarki w szkole (też: <b>nurse's office</b>). Tam pomagają, gdy ktoś źle się czuje.`}},
+ {topic:'Stołówka: canteen; lunch',
+  diag:D(`Co znaczy <b>lunch</b>?`,'posiłek w środku dnia (obiad)',['kolacja','śniadanie'],`<b>lunch</b> = obiad / posiłek w środku dnia. W szkole zwykle jemy go w stołówce.`),
+  main:{type:'choice',stem:`I eat my lunch in the ___ at school.`,opts:['canteen','library','gym'],a:'canteen',why:`<b>canteen</b> = stołówka. Tam jemy lunch.`}},
+ {topic:'Okulary: glasses; see = widzieć',
+  diag:D(`Co znaczy <b>can't see well</b>?`,'nie widzi dobrze',['nie słyszy dobrze','nie mówi dobrze'],`<b>see</b> = widzieć. <b>can't see well</b> = nie widzi dobrze.`),
+  main:{type:'choice',stem:`Our headteacher is tall with dark hair and brown eyes. She wears ___ because she can't see well.`,opts:['a hat','a coat','glasses'],a:'glasses',why:`<b>glasses</b> = okulary. Osoba, która słabo widzi, nosi okulary.`}}
+]},
+/* ---------- Zadanie 11 (Extra) ---------- */
+{num:11,name:'Extra',instr:'Uzupełnij zdania wyrazami z ramki i czasownikami podanymi w nawiasach w formie czasu present simple lub present continuous.',note:'W każdym zdaniu są <b>dwie luki</b>: wpisz czasownik i wybierz wyrażenie z listy: <b>always, day, often, the moment, this photo</b>.',items:[
+ {topic:'Present simple: he / she / it + -s',
+  diag:D(`Do <b>Emily</b> (ona) w present simple dopisujemy do czasownika:`,'-s (walks)',['-ing (walking)','nic (walk)'],`Zwyczaj (<b>every day</b>) → <b>present simple</b>. Po <b>he / she / it</b> dodajemy <b>-s</b>: <b>she walks</b>. Emily = she.`),
+  main:{type:'gaps',parts:['Emily ',T('walks'),' (walk) to school every ',SEL('day'),'.'],hint:`Emily = she → czasownik z <b>-s</b>. W drugiej luce: <b>every</b> + słowo z listy.`,why:`Emily = she → <b>walk + s = walks</b>. <b>every day</b> = codziennie.`}},
+ {topic:'Present simple: pytanie z Do',
+  diag:D(`Jak zaczynamy pytanie w present simple z <b>you</b>?`,'Do you …?',['Does you …?','You do …?'],`W present simple pytamy przez <b>Do</b> (I / you / we / they) albo <b>Does</b> (he / she / it): <b>Do you have breakfast…?</b>`),
+  main:{type:'gaps',parts:['‘',T('do you have'),' (you / have) breakfast at 7 a.m. every morning?’\n‘Yes, ',SEL('always'),'.’'],hint:`Pytanie z <b>you</b> zaczyna się od <b>Do</b>. Druga luka: „every morning” → <b>zawsze</b>.`,why:`<b>Do you have breakfast…?</b> = Czy jadasz śniadanie…? Odpowiedź <b>Yes, always</b> = Tak, zawsze (every morning = każdego ranka).`}},
+ {topic:'Present simple: pytanie z Does',
+  diag:D(`Jak zaczynamy pytanie o <b>your sister</b> (ona) w present simple?`,'Does',['Do','Is'],`<b>sister</b> = she → <b>Does</b>. Po „Does” czasownik jest bez -s: <b>Does your sister help you?</b>`),
+  main:{type:'gaps',parts:['‘',T('does your sister help'),' (your sister / help) you with your homework?’\n‘Not always, but ',SEL('often'),'.’'],hint:`Pytanie o <b>your sister</b> zaczyna się od <b>Does</b>. Druga luka: „Not always, but …” → <b>często</b>.`,why:`<b>Does your sister help you…?</b> Odpowiedź <b>Not always, but often</b> = Nie zawsze, ale często.`}},
+ {topic:'Present continuous: zdjęcie / teraz',
+  diag:D(`Opisujemy, co ktoś robi właśnie na zdjęciu (jakby „w tej chwili”). Którego czasu użyjemy?`,'present continuous (am dancing)',['present simple (dance)'],`Gdy opisujemy to, co ktoś robi w danej chwili (też na zdjęciu), używamy <b>present continuous</b>: <b>am / is / are + czasownik-ing</b>. <b>I am dancing</b>.`),
+  main:{type:'gaps',parts:['I ',T('am dancing',`'m dancing`,'m dancing'),' (dance) at a party in ',SEL('this photo'),'.'],hint:`Opisujemy zdjęcie: <b>I am + dancing</b>. W drugiej luce: <b>in</b> + …`,why:`<b>I am (I'm) dancing at a party in this photo.</b> = Na tym zdjęciu tańczę na imprezie.`}},
+ {topic:'Present continuous: przeczenie + at the moment',
+  diag:D(`Jak powiedzieć „nie rozmawiają” w present continuous?`,`They aren't speaking`,[`They don't speaking`,`They not speak`],`Przeczenie w present continuous: <b>are + not (aren't) + czasownik-ing</b>. Nie używamy „don't” z -ing.`),
+  main:{type:'gaps',parts:['They ',T(`aren't speaking`,'are not speaking','arent speaking'),' (not speak) to their grandmother on the phone at ',SEL('the moment'),'.'],hint:`<b>They + aren't + speaking</b>. W drugiej luce: <b>at</b> + …`,why:`<b>They aren't speaking … at the moment.</b> = Oni teraz nie rozmawiają z babcią przez telefon. <b>at the moment</b> = w tej chwili.`}}
+]}
+];
+
+const ITEMS=[];
+SECTIONS.forEach((s,si)=>s.items.forEach((it,k)=>ITEMS.push(Object.assign({s:si,k},it))));
+const N=ITEMS.length;
+const FIRST=SECTIONS.map((s,si)=>ITEMS.findIndex(it=>it.s===si));
+
+/* ===== Pomocnicze ===== */
+const $=(s,r)=>(r||document).querySelector(s);
+const $$=(s,r)=>[...(r||document).querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm=s=>String(s).toLowerCase().replace(/[’‘`´]/g,"'").replace(/\s+/g,' ').replace(/\s+\?/g,'?').replace(/[.!]+$/,'').trim();
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const app=$('#app');
+
+/* ===== Stan i zapis ===== */
+const KEY='test-angielski-krok-po-kroku-v1';
+const S={i:0,phase:'start',res:[],name:''};
+function save(){try{localStorage.setItem(KEY,JSON.stringify({i:S.i,res:S.res,name:S.name}))}catch(e){}}
+function load(){try{const v=JSON.parse(localStorage.getItem(KEY));if(v&&typeof v.i==='number'&&v.i>=0&&v.i<N){S.i=v.i;S.res=Array.isArray(v.res)?v.res:[];S.name=v.name||''}}catch(e){}}
+function rec(kind,first,tries){const r=S.res[S.i]=S.res[S.i]||{};r[kind]=first;r[kind+'t']=tries;save()}
+function reset(){S.i=0;S.res=[];try{localStorage.removeItem(KEY)}catch(e){}}
+
+function go(phase,i){
+  if(i!==undefined)S.i=i;
+  S.phase=phase;
+  render();
+  window.scrollTo(0,0);
+  const c=$('#card');if(c)c.focus({preventScroll:true});
+}
+function next(){
+  const j=S.i+1;
+  if(j>=N){S.phase='end';save();render();window.scrollTo(0,0);return}
+  const newSec=ITEMS[j].s!==ITEMS[S.i].s;
+  S.i=j;save();
+  go(newSec?'intro':'diag');
+}
+const isLastOfSection=()=>{const it=ITEMS[S.i];return it.k===SECTIONS[it.s].items.length-1};
+
+/* ===== Nagłówek ===== */
+function header(){
+  const inTest=['intro','diag','main'].includes(S.phase);
+  let pct=0;
+  if(inTest)pct=(S.i+(S.phase==='main'?0.5:0))/N*100;
+  else if(S.phase==='end')pct=100;
+  else if(S.phase==='start')pct=S.i/N*100;
+  $('#barfill').style.width=pct+'%';
+  $('.bar').setAttribute('aria-valuenow',Math.round(pct));
+  $('#count').textContent=inTest?`${S.i+1} z ${N}`:'';
+}
+
+function card(html){
+  app.innerHTML=`<section class="card" id="card" tabindex="-1">${html}</section>`;
+  return $('#card');
+}
+
+/* ===== Elementy wspólne ===== */
+function stemHTML(stem,fill,cls){
+  return esc(stem).replace('___',`<span class="gap ${cls||''}" id="gapfill">${fill?esc(fill):'&nbsp;'}</span>`);
+}
+function dialogueHTML(cur,fill){
+  const lines=DIALOG.map(([who,txt])=>{
+    const h=esc(txt).replace(/\{(\d)\}/g,(m,d)=>{
+      const n=+d,w=DIALOG_ANS[n],c=DIALOG_CAP[n]?cap(w):w;
+      if(n===cur)return `<span class="gap cur" id="gapfill">${fill?esc(DIALOG_CAP[n]?cap(fill):fill):'?'}</span>`;
+      if(n<cur)return `<span class="gap done">${esc(c)}</span>`;
+      return `<span class="gap later">(${n})</span>`;
+    });
+    return `<p><span class="who">${who}</span>${h}</p>`;
+  }).join('');
+  return `<div class="dlg">${lines}</div>`;
+}
+function readingHTML(ev){
+  return `<div class="read" id="read" ${ev?`data-ev="${ev}"`:''}>${READING}</div>`;
+}
+function showEv(n){
+  const r=$('#read');if(!r)return;
+  r.dataset.ev=n;
+  const e=r.querySelector(`.ev[data-e="${n}"]`);
+  if(e)r.scrollTop=Math.max(0,e.offsetTop-24);
+}
+function gapsPreview(parts){
+  return parts.map(p=>typeof p==='string'?esc(p).replace(/\n/g,'<br>'):'<span class="gap">&nbsp;</span>').join('');
+}
+function ctxHTML(it,mode){
+  const m=it.main;
+  if(m.type==='order'){
+    const chips=m.words.map(w=>`<span class="chip static">${esc(w)}</span>`).join(' ');
+    return `<p class="lbl">Zdanie z testu: ułóż je z tych wyrazów</p><div class="bank">${chips}</div>`;
+  }
+  if(m.type==='gaps')return `<p class="lbl">Zdanie z testu</p><p class="gline">${gapsPreview(m.parts)}</p>`;
+  if(m.ctx==='reading')return `<p class="lbl">Pytanie z testu</p><p class="qline"><b>${esc(m.q)}</b></p>${readingHTML()}`;
+  if(m.ctx==='dialogue')return `<p class="lbl">Dialog z testu – luka ${m.n}</p>${dialogueHTML(m.n)}`;
+  return `<p class="lbl">Zdanie z testu</p><p class="sent">${stemHTML(m.stem)}</p>`;
+}
+function fb(kind,html){
+  const el=$('#fb');
+  el.className='fb '+kind;
+  el.innerHTML=html;
+}
+function nextButton(){
+  const act=$('#act');
+  const label=S.i===N-1?'Zobacz wynik':isLastOfSection()?'Następne zadanie':'Dalej';
+  act.innerHTML=`<button class="btn" id="nx" type="button">${label} →</button>`;
+  const b=$('#nx');
+  b.onclick=()=>S.phase==='diag'?go('main'):next();
+  b.focus({preventScroll:false});
+}
+
+/* ===== Ekrany ===== */
+function vStart(){
+  const resume=S.i>0||S.res.length>0;
+  const jump=SECTIONS.map((s,si)=>`<button class="btn sec" type="button" data-sec="${si}">Zadanie ${s.num} · ${s.name}</button>`).join(' ');
+  card(`
+    <h1>Test z angielskiego – krok po kroku</h1>
+    <p>Robisz po jednym zdaniu. <b>Przed każdym zdaniem z testu</b> dostajesz jedno krótkie pytanie pomocnicze. Jeśli jeszcze czegoś nie wiesz, wyjaśniam to i sprawdzamy jeszcze raz.</p>
+    <ul class="plain">
+      <li>${SECTIONS.length} zadań, ${N} zdań.</li>
+      <li>Bez zadania ze słuchania (7) i bez zadania z pisania (9).</li>
+      <li>Nie ma limitu czasu. Pomyłka nic nie psuje – po niej jest wyjaśnienie.</li>
+    </ul>
+    <p><label for="nm">Imię (nie trzeba):</label><br><input class="name" id="nm" type="text" autocomplete="off" value="${esc(S.name)}"></p>
+    <div class="actions">
+      ${resume?`<button class="btn" id="cont" type="button">Kontynuuj od pytania ${S.i+1}</button><button class="btn sec" id="fresh" type="button">Zacznij od nowa</button>`
+              :`<button class="btn" id="begin" type="button">Zaczynamy</button>`}
+    </div>
+    <details><summary>Dla nauczyciela: przejdź do wybranego zadania</summary><div class="actions">${jump}</div></details>
+  `);
+  const nm=$('#nm');
+  nm.oninput=()=>{S.name=nm.value.trim();save()};
+  const begin=$('#begin');if(begin)begin.onclick=()=>{reset();S.name=nm.value.trim();go('intro',0)};
+  const cont=$('#cont');if(cont)cont.onclick=()=>{
+    const it=ITEMS[S.i];go(it.k===0&&!S.res[S.i]?'intro':'diag');
+  };
+  const fresh=$('#fresh');if(fresh)fresh.onclick=()=>{const n=nm.value.trim();reset();S.name=n;save();go('intro',0)};
+  $$('[data-sec]').forEach(b=>b.onclick=()=>go('intro',FIRST[+b.dataset.sec]));
+}
+
+function vIntro(){
+  const it=ITEMS[S.i],sec=SECTIONS[it.s];
+  card(`
+    <span class="tag test">Zadanie ${sec.num} · ${sec.name}</span>
+    <h1>${esc(sec.instr)}</h1>
+    <p class="muted">${sec.items.length} zdań. ${sec.note}</p>
+    <p class="muted small">Przed każdym zdaniem będzie jedno krótkie pytanie pomocnicze.</p>
+    <div class="actions"><button class="btn" id="go" type="button">Zaczynamy</button></div>
+  `);
+  $('#go').onclick=()=>go('diag');
+}
+
+function vDiag(){
+  const it=ITEMS[S.i],sec=SECTIONS[it.s],d=it.diag;
+  const wrong=[];let done=false;
+  card(`
+    <span class="tag help">Pytanie pomocnicze</span>
+    <p class="muted small">Zadanie ${sec.num}, zdanie ${it.k+1} z ${sec.items.length}. Zanim zrobisz to zdanie, sprawdźmy jedną rzecz.</p>
+    <div class="ctx">${ctxHTML(it,'diag')}</div>
+    <h1>${d.q}</h1>
+    <div class="opts">${d.opts.map((o,k)=>`<button class="opt" type="button" data-k="${k}"><span class="l">${'abcdef'[k]}</span><span class="t">${esc(o)}</span></button>`).join('')}</div>
+    <div id="fb" role="status" aria-live="polite"></div>
+    <div class="actions" id="act"></div>
+  `);
+  $$('.opt').forEach(b=>b.onclick=()=>{
+    if(done)return;
+    const k=+b.dataset.k;
+    if(k===d.a){
+      done=true;
+      b.classList.add('right');
+      $$('.opt').forEach(x=>{if(x!==b)x.disabled=true});
+      rec('d',wrong.length===0,wrong.length+1);
+      fb('ok',wrong.length===0
+        ?`<b class="h">Dobrze!</b>Teraz zdanie z testu.`
+        :`<b class="h">Tak, teraz się zgadza.</b>${d.why}<br>Zapamiętaj to i przejdź do zdania z testu.`);
+      nextButton();
+    }else{
+      wrong.push(k);
+      b.classList.add('wrong');b.disabled=true;
+      fb('bad',`<b class="h">Jeszcze nie. Wyjaśniam:</b>${d.why}<br><b>Teraz wybierz jeszcze raz.</b>`);
+    }
+  });
+}
+
+function vMain(){
+  const it=ITEMS[S.i],m=it.main,sec=SECTIONS[it.s];
+  const head=`<span class="tag test">Zdanie z testu</span>
+    <p class="muted small">Zadanie ${sec.num}, zdanie ${it.k+1} z ${sec.items.length}. ${esc(sec.instr)}</p>`;
+  if(m.type==='choice')mainChoice(it,head);
+  else if(m.type==='order')mainOrder(it,head);
+  else mainGaps(it,head);
+}
+
+function mainChoice(it,head){
+  const m=it.main;const wrong=[];let done=false;
+  let top='';
+  if(m.ctx==='reading')top=`<p class="qline"><b>${esc(m.q)}</b></p>${readingHTML()}`;
+  else if(m.ctx==='dialogue')top=`<div class="ctx">${dialogueHTML(m.n)}</div>`;
+  else top=`<p class="sent">${stemHTML(m.stem)}</p>`;
+  const opts=m.chips
+    ?`<div class="bank">${m.opts.map((o,k)=>`<button class="chip" type="button" data-k="${k}">${esc(o)}</button>`).join('')}</div>`
+    :`<div class="opts">${m.opts.map((o,k)=>`<button class="opt" type="button" data-k="${k}"><span class="l">${'abcdef'[k]}</span><span class="t">${esc(o)}</span></button>`).join('')}</div>`;
+  card(`${head}${top}${opts}<div id="fb" role="status" aria-live="polite"></div><div class="actions" id="act"></div>`);
+  $$('[data-k]').forEach(b=>b.onclick=()=>{
+    if(done)return;
+    const k=+b.dataset.k,v=m.opts[k];
+    if(v===m.a){
+      done=true;
+      b.classList.add('right');
+      $$('[data-k]').forEach(x=>{if(x!==b)x.disabled=true});
+      const g=$('#gapfill');if(g){g.textContent=m.ctx==='dialogue'&&[1,2,5].includes(m.n)?cap(v):v;g.classList.add('done')}
+      if(m.ev)showEv(m.ev);
+      rec('m',wrong.length===0,wrong.length+1);
+      fb('ok',`<b class="h">${wrong.length===0?'Dobrze!':'Tak, ta odpowiedź jest dobra.'}</b>${m.why}`);
+      nextButton();
+    }else{
+      wrong.push(k);
+      b.classList.add('wrong');b.disabled=true;
+      if(m.ev)showEv(m.ev);
+      fb('bad',`<b class="h">Jeszcze nie.</b>${m.ev?'Zobacz podświetlone miejsce w tekście. ':''}Wybierz inną odpowiedź.<br><b>Przypomnienie:</b> ${it.diag.why}`);
+    }
+  });
+}
+
+function mainGaps(it,head){
+  const m=it.main;let attempts=0,done=false,k=0;
+  const gaps=m.parts.filter(p=>typeof p!=='string');
+  const html=m.parts.map(p=>{
+    if(typeof p==='string')return esc(p).replace(/\n/g,'<br>');
+    const i=k++;
+    if(p.k==='t')return `<input class="gi" data-g="${i}" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Luka ${i+1}">`;
+    return `<select class="gs" data-g="${i}" aria-label="Luka ${i+1}"><option value="">wybierz…</option>${BANK11.map(w=>`<option>${esc(w)}</option>`).join('')}</select>`;
+  }).join('');
+  card(`${head}<p class="gline">${html}</p>
+    <div id="fb" role="status" aria-live="polite"></div>
+    <div class="actions" id="act"><button class="btn" id="chk" type="button">Sprawdź</button></div>`);
+  const els=$$('[data-g]');
+  els[0].focus();
+  els.forEach(e=>e.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();check()}}));
+  $('#chk').onclick=check;
+  function ok(p,v){return p.k==='t'?p.a.some(x=>norm(x)===norm(v)):v===p.a}
+  function check(){
+    if(done)return;
+    if(els.some(e=>!e.value.trim())){fb('hint',`<b class="h">Uzupełnij wszystkie luki.</b>Potem dotknij „Sprawdź”.`);return}
+    const results=els.map((e,i)=>ok(gaps[i],e.value));
+    els.forEach((e,i)=>{e.classList.toggle('ok',results[i]);e.classList.toggle('bad',!results[i])});
+    if(results.every(Boolean)){
+      done=true;els.forEach(e=>e.disabled=true);
+      rec('m',attempts===0,attempts+1);
+      $('#chk').remove();
+      fb('ok',`<b class="h">${attempts===0?'Dobrze!':'Tak, teraz jest poprawnie.'}</b>${m.why}`);
+      nextButton();
+    }else{
+      attempts++;
+      if(attempts===1){
+        fb('hint',`<b class="h">Prawie. Czerwona luka jest do poprawienia.</b>${m.hint}`);
+      }else{
+        done=true;
+        els.forEach((e,i)=>{const p=gaps[i];e.value=p.k==='t'?p.a[0]:p.a;e.disabled=true;e.classList.remove('bad');e.classList.add('ok')});
+        rec('m',false,attempts);
+        $('#chk').remove();
+        fb('info',`<b class="h">Pokazuję poprawną odpowiedź.</b>${m.why}`);
+        nextButton();
+      }
+    }
+  }
+}
+
+function mainOrder(it,head){
+  const m=it.main;let placed=[],attempts=0,done=false,marks=null;
+  card(`${head}
+    <p class="muted small">Ułóż zdanie:</p>
+    <div class="build" id="build" aria-label="Twoje zdanie"></div>
+    <div class="bank" id="bank" aria-label="Wyrazy do wyboru"></div>
+    <div id="fb" role="status" aria-live="polite"></div>
+    <div class="actions" id="act"><button class="btn" id="chk" type="button" disabled>Sprawdź</button><button class="btn sec" id="clr" type="button">Wyczyść</button></div>`);
+  function draw(){
+    $('#build').innerHTML=placed.map((wi,pos)=>`<button class="chip ${marks?(marks[pos]?'ok':'bad'):''}" type="button" data-p="${pos}" ${done?'disabled':''}>${esc(m.words[wi])}</button>`).join('');
+    $('#bank').innerHTML=m.words.map((w,wi)=>placed.includes(wi)?'':`<button class="chip" type="button" data-w="${wi}" ${done?'disabled':''}>${esc(w)}</button>`).join('');
+    const c=$('#chk');if(c)c.disabled=placed.length!==m.words.length;
+    $$('#build [data-p]').forEach(b=>b.onclick=()=>{if(done)return;placed.splice(+b.dataset.p,1);marks=null;draw()});
+    $$('#bank [data-w]').forEach(b=>b.onclick=()=>{if(done)return;placed.push(+b.dataset.w);marks=null;draw()});
+  }
+  draw();
+  $('#clr').onclick=()=>{if(done)return;placed=[];marks=null;draw()};
+  $('#chk').onclick=()=>{
+    if(done||placed.length!==m.words.length)return;
+    const toks=placed.map(i=>m.words[i]);
+    if(norm(toks.join(' '))===norm(m.ans.join(' '))){
+      done=true;marks=toks.map(()=>true);draw();
+      rec('m',attempts===0,attempts+1);
+      $('#chk').remove();$('#clr').remove();
+      fb('ok',`<b class="h">${attempts===0?'Dobrze!':'Tak, teraz jest poprawnie.'}</b>${m.why}`);
+      nextButton();
+    }else{
+      attempts++;
+      if(attempts===1){
+        marks=toks.map((t,i)=>t===m.ans[i]);draw();
+        fb('hint',`<b class="h">Prawie. Czerwone wyrazy stoją w złym miejscu.</b>${m.hint}<br>Dotknij wyrazu, żeby go zdjąć, i ułóż jeszcze raz.`);
+      }else{
+        done=true;
+        placed=m.ans.map(t=>m.words.indexOf(t));marks=placed.map(()=>true);draw();
+        rec('m',false,attempts);
+        $('#chk').remove();$('#clr').remove();
+        fb('info',`<b class="h">Pokazuję poprawną kolejność.</b>${m.why}`);
+        nextButton();
+      }
+    }
+  };
+}
+
+/* ===== Wynik ===== */
+function secScore(si){
+  let got=0,tot=0;
+  ITEMS.forEach((it,i)=>{if(it.s===si){tot++;if((S.res[i]||{}).m===true)got++}});
+  return [got,tot];
+}
+function reportText(){
+  let pts=0;
+  const lines=SECTIONS.map((s,si)=>{const [g,t]=secScore(si);pts+=g;return `Zadanie ${s.num} (${s.name}): ${g}/${t}`});
+  const weak=[...new Set(ITEMS.filter((it,i)=>{const r=S.res[i]||{};return r.d===false||r.m===false}).map(it=>it.topic))];
+  return `Test z angielskiego krok po kroku${S.name?' – '+S.name:''}\nWynik (zdania zrobione bez pomyłki za pierwszym razem): ${pts}/${N}\n\n${lines.join('\n')}\n\nDo powtórki:\n${weak.length?weak.map(w=>'- '+w).join('\n'):'- nic'}`;
+}
+function vEnd(){
+  let pts=0;
+  const rows=SECTIONS.map((s,si)=>{const [g,t]=secScore(si);pts+=g;return `<tr><td>Zadanie ${s.num} · ${s.name}</td><td class="n">${g} / ${t}</td></tr>`}).join('');
+  const seen=new Set(),rev=[];
+  ITEMS.forEach((it,i)=>{
+    const r=S.res[i]||{};
+    if((r.d===false||r.m===false)&&!seen.has(it.topic)){seen.add(it.topic);rev.push(`<div class="rev"><b>${esc(it.topic)}</b><br>${it.diag.why}</div>`)}
+  });
+  const detail=ITEMS.map((it,i)=>{
+    const r=S.res[i]||{};
+    const f=v=>v===true?'✓':v===false?'✗':'–';
+    return `<tr><td>${SECTIONS[it.s].num}.${it.k+1}</td><td>${esc(it.topic)}</td><td class="n">${f(r.d)} <span class="muted small">(${r.dt||0})</span></td><td class="n">${f(r.m)} <span class="muted small">(${r.mt||0})</span></td></tr>`;
+  }).join('');
+  card(`
+    <span class="tag test">Koniec testu</span>
+    <h1>${S.name?esc(S.name)+', t':'T'}o już wszystko.</h1>
+    <p class="score">${pts} / ${N}</p>
+    <p class="muted">Tyle zdań zrobiłaś bez pomyłki za pierwszym razem. Pozostałe zdania też są zrobione – po wyjaśnieniu.</p>
+    <table><tbody>${rows}</tbody></table>
+    <h2>Do powtórki</h2>
+    ${rev.length?rev.join(''):'<p>Nic – wszystkie pytania pomocnicze i zdania poszły bez pomyłki.</p>'}
+    <details><summary>Dla nauczyciela: szczegóły i raport</summary>
+      <p class="muted small">Kolumny: pytanie pomocnicze / zdanie z testu. ✓ = dobrze za pierwszym razem, ✗ = były pomyłki. W nawiasie: liczba prób.</p>
+      <table><thead><tr><th>Nr</th><th>Temat</th><th>Pomocnicze</th><th>Test</th></tr></thead><tbody>${detail}</tbody></table>
+      <h2>Raport do skopiowania</h2>
+      <textarea class="rep" id="rep" readonly>${esc(reportText())}</textarea>
+      <div class="actions"><button class="btn sec" id="cp" type="button">Kopiuj raport</button></div>
+      <p id="cpm" class="muted small" role="status"></p>
+    </details>
+    <div class="actions"><button class="btn" id="again" type="button">Zacznij od początku</button></div>
+  `);
+  $('#again').onclick=()=>{const n=S.name;reset();S.name=n;save();go('start',0)};
+  $('#cp').onclick=()=>{
+    const ta=$('#rep'),msg=$('#cpm');
+    const fallback=()=>{ta.select();try{document.execCommand('copy');msg.textContent='Skopiowano.'}catch(e){msg.textContent='Zaznacz tekst i skopiuj ręcznie.'}};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(ta.value).then(()=>msg.textContent='Skopiowano.').catch(fallback);
+    else fallback();
+  };
+}
+
+function render(){
+  header();
+  ({start:vStart,intro:vIntro,diag:vDiag,main:vMain,end:vEnd})[S.phase]();
+}
+$('#menu').onclick=()=>{
+  if(S.phase==='end'||S.phase==='start'){go('start')}
+  else{save();go('start')}
+};
+
+load();
+render();
+</script>
+</body>
+</html>
