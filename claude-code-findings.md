@@ -24,10 +24,10 @@ Checked against the current hooks docs on 2026-10-04:
 - `~/.claude/stop-hook-git-check.sh` (forces a commit and push) was still active in web sessions on 2026-10-04.
 
 ### Subagent hooks (web)
-- `PreToolUse` fires when the main Claude spawns a Task subagent.
-- `SubagentStop` fires for every subagent, including nested ones (2 spawns produced 4 stop events).
+- `PreToolUse` fires when the main Claude spawns a Task subagent. The spawning tool is now called `Agent` in this environment, so a `Task` matcher may no longer match (not tested).
+- `SubagentStop` fired more often than top-level spawns (2 spawns, 4 stop events), most likely because Plan spawned its own subagents; the log did not record which agent each event came from.
 - `PostToolUse` fires for file operations by both the main Claude and subagents.
-- `stop_hook_active` was `False` in every logged event, so it did prevent infinite loops. Not confirmed in the current docs (the page I read was truncated before the Stop section).
+- `stop_hook_active` was `False` in every logged event. That only means none came from a stop-hook continuation; it does not show loop protection working. The field still exists (current docs, 2026-10-10), and there is now also a built-in cap of 8 consecutive stop-hook continuations (see `hook-cascade-patterns.md`).
 - A Plan subagent took 5+ minutes and spawned its own subagents; each created log files, which made the Stop hook force commits (a cascade).
 
 ### Web vs CLI
@@ -56,8 +56,8 @@ Answered since (current docs, 2026-10-04):
 - **Prompt hooks on PreToolUse/PostToolUse?** Yes, on events that support decision control.
 - **Duplicate hook commands?** The same handler defined in several settings files runs once. A plugin's or skill's copy stays separate.
 - **Plugin vs user hooks?** They merge additively and run side by side.
+- **Is `stop_hook_active` still sent?** Yes, to Stop and SubagentStop hooks (checked 2026-10-10).
 
 Still open:
 - Exact input JSON for each MCP tool type.
 - Why the Plan subagent spawned extra subagents (may differ in current versions).
-- Whether `stop_hook_active` is still sent on current versions.
