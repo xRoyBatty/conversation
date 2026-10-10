@@ -29,9 +29,10 @@ Do not rely on a "today" date in this file. Use the date of the session.
 7. **Environment detection**: `$CLAUDE_CODE_REMOTE` is `"true"` on web, unset in CLI.
 
 ### Session management
-8. **Teleport**: Web sessions can be moved to the CLI with `claude --teleport <session_id>`; requires a local repo checkout.
-9. **Hook loading**: Hooks load at session start in both environments; changes mid-session need a restart.
-10. **Web hook workflow**: Hooks created during a web session are inactive until merged to the base branch (or the branch is chosen as the base for a new session), because web sessions pull from the base branch at startup.
+8. **New sessions from a session (tested 2026-10-10)**: Claude can start a new cloud session from this repo (it loads CLAUDE.md from `main`); the user sees it in the app's Code session list and can continue the conversation there.
+9. **Teleport**: Web sessions can be moved to the CLI with `claude --teleport <session_id>`; requires a local repo checkout.
+10. **Hook loading**: Hooks load at session start in both environments; changes mid-session need a restart.
+11. **Web hook workflow**: Hooks created during a web session are inactive until merged to the base branch (or the branch is chosen as the base for a new session), because web sessions pull from the base branch at startup.
 
 ### Practical implications
 - Web hooks: use exit 2 (blocking), or exit 0 with file logging. Stderr alone is invisible.
