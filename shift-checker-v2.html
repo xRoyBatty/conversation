@@ -1,0 +1,348 @@
+<title>Grafik zmian 2+2+2</title>
+<style>
+  /* Layout: one narrow column, phone-first: today's answer on top, then a one-month calendar. */
+  :root {
+    --bg: #f4f6f8;
+    --panel: #ffffff;
+    --fg: #15191f;
+    --muted: #5a6371;
+    --line: #e1e5ea;
+    --s1: #2e7d32;
+    --s1-soft: #e5f1e6;
+    --s1-text: #1b5e20;
+    --s2: #1565c0;
+    --s2-soft: #e3edf9;
+    --s2-text: #0d47a1;
+    --off-soft: #eceff3;
+    --sel: #e8890c;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    --font-num: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1115; --panel: #181c22; --fg: #eef1f5; --muted: #9ba4b1; --line: #2a3039;
+      --s1: #2e7d32; --s1-soft: #16291a; --s1-text: #8fd193;
+      --s2: #1565c0; --s2-soft: #132339; --s2-text: #9cc7f5;
+      --off-soft: #222830; --sel: #f5a524;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1115; --panel: #181c22; --fg: #eef1f5; --muted: #9ba4b1; --line: #2a3039;
+    --s1: #2e7d32; --s1-soft: #16291a; --s1-text: #8fd193;
+    --s2: #1565c0; --s2-soft: #132339; --s2-text: #9cc7f5;
+    --off-soft: #222830; --sel: #f5a524;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; }
+  .app { max-width: 30rem; margin-inline: auto; padding: 12px 16px 32px; display: flex; flex-direction: column; gap: 12px; }
+  button { font: inherit; color: inherit; }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--sel); outline-offset: 2px; }
+
+  .top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+  .top h1 { margin: 0; font-size: 1.15rem; font-weight: 700; }
+  .top .hours { color: var(--muted); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+
+  /* Today card */
+  .today { border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 2px; background: var(--off-soft); }
+  .today.s1 { background: var(--s1); color: #fff; }
+  .today.s2 { background: var(--s2); color: #fff; }
+  .today .lbl { font-size: 0.85rem; opacity: 0.85; }
+  .today .val { font-family: var(--font-num); font-size: 2.1rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; }
+  .today .hrs { font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+  .today .status { margin-top: 8px; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .today .status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: 0.8; flex: none; }
+  .today.off .status::before { display: none; }
+
+  .pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr)); gap: 10px; }
+  .mini { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .mini .lbl { color: var(--muted); font-size: 0.78rem; letter-spacing: 0.02em; }
+  .mini .val { font-size: 1.15rem; font-weight: 700; }
+  .mini .sub { color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+  .mini.s1 .val { color: var(--s1-text); }
+  .mini.s2 .val { color: var(--s2-text); }
+
+  /* Calendar */
+  .cal { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 10px 10px 12px; }
+  .cal-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 6px; }
+  .cal-head h2 { margin: 0; font-size: 1.05rem; font-weight: 700; text-align: center; flex: 1; }
+  .nav { width: 44px; height: 44px; border-radius: 12px; border: 0; background: transparent; font-size: 1.5rem; line-height: 1; cursor: pointer; }
+  .nav:active { background: var(--off-soft); }
+  .wd, .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .wd div { text-align: center; color: var(--muted); font-size: 0.72rem; padding: 4px 0; }
+  .wd div:nth-child(n+6) { font-weight: 700; }
+  .grid { touch-action: pan-y; }
+  .day { aspect-ratio: 1; border: 0; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.95rem; font-variant-numeric: tabular-nums; cursor: pointer; position: relative; padding: 0; }
+  .day.s1 { background: var(--s1); color: #fff; }
+  .day.s2 { background: var(--s2); color: #fff; }
+  .day.off { background: var(--off-soft); color: var(--muted); }
+  .day.today { font-weight: 800; }
+  .day.today::after { content: ""; position: absolute; bottom: 5px; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+  .day[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--panel), 0 0 0 4px var(--sel); }
+  .day:active { transform: scale(0.94); }
+  .cal-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.78rem; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .legend i { width: 12px; height: 12px; border-radius: 4px; display: inline-block; }
+  .legend .k1 { background: var(--s1); } .legend .k2 { background: var(--s2); } .legend .k0 { background: var(--off-soft); border: 1px solid var(--line); }
+  .pill { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 8px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer; min-height: 40px; }
+
+  /* Selected day */
+  .detail { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+  .detail .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .detail .date { font-weight: 700; }
+  .detail .rel { color: var(--muted); font-size: 0.85rem; }
+  .badge { border-radius: 999px; padding: 4px 10px; font-size: 0.85rem; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .badge.s1 { background: var(--s1-soft); color: var(--s1-text); }
+  .badge.s2 { background: var(--s2-soft); color: var(--s2-text); }
+  .badge.off { background: var(--off-soft); color: var(--muted); }
+  .pick { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--muted); }
+  .pick input { flex: 1; min-width: 0; font: inherit; font-size: 16px; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 40px; }
+
+  /* Month summary */
+  .sum { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 8px; text-align: center; }
+  .sum .n { font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .sum .t { font-size: 0.72rem; color: var(--muted); }
+  .sum .c1 .n { color: var(--s1-text); } .sum .c2 .n { color: var(--s2-text); }
+  .sum-title { margin: 0 0 -4px 4px; font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+
+  @media (prefers-reduced-motion: reduce) { .day:active { transform: none; } }
+</style>
+
+<main class="app">
+  <header class="top">
+    <h1>Grafik zmian 2+2+2</h1>
+    <span class="hours">I 7:00–15:00 · II 16:00–24:00</span>
+  </header>
+
+  <section class="today" id="today" aria-live="polite">
+    <span class="lbl" id="todayLbl">Dziś</span>
+    <span class="val" id="todayVal">—</span>
+    <span class="hrs" id="todayHrs"></span>
+    <span class="status" id="todayStatus"></span>
+  </section>
+
+  <section class="pair">
+    <div class="mini" id="tmr">
+      <span class="lbl">Jutro</span>
+      <span class="val" id="tmrVal">—</span>
+      <span class="sub" id="tmrSub"></span>
+    </div>
+    <div class="mini" id="nxt">
+      <span class="lbl" id="nxtLbl">Najbliższe wolne</span>
+      <span class="val" id="nxtVal">—</span>
+      <span class="sub" id="nxtSub"></span>
+    </div>
+  </section>
+
+  <section class="cal" aria-label="Kalendarz">
+    <div class="cal-head">
+      <button class="nav" id="prev" aria-label="Poprzedni miesiąc">‹</button>
+      <h2 id="monthLbl">—</h2>
+      <button class="nav" id="next" aria-label="Następny miesiąc">›</button>
+    </div>
+    <div class="wd"><div>Pn</div><div>Wt</div><div>Śr</div><div>Cz</div><div>Pt</div><div>Sb</div><div>Nd</div></div>
+    <div class="grid" id="grid"></div>
+    <div class="cal-foot">
+      <div class="legend"><span><i class="k1"></i>I zmiana</span><span><i class="k2"></i>II zmiana</span><span><i class="k0"></i>Wolne</span></div>
+      <button class="pill" id="goToday">Wróć do dziś</button>
+    </div>
+  </section>
+
+  <section class="detail" aria-live="polite">
+    <div class="row">
+      <div>
+        <div class="date" id="selDate">—</div>
+        <div class="rel" id="selRel"></div>
+      </div>
+      <span class="badge" id="selBadge"></span>
+    </div>
+    <label class="pick">Inna data <input type="date" id="pick"></label>
+  </section>
+
+  <p class="sum-title" id="sumTitle">W tym miesiącu</p>
+  <section class="sum">
+    <div class="c1"><div class="n" id="cS1">—</div><div class="t">I zmiana</div></div>
+    <div class="c2"><div class="n" id="cS2">—</div><div class="t">II zmiana</div></div>
+    <div><div class="n" id="cOff">—</div><div class="t">wolne</div></div>
+    <div><div class="n" id="cHrs">—</div><div class="t">godz. pracy</div></div>
+  </section>
+</main>
+
+<script>
+(() => {
+  // 5 January 2026 is the first day of I zmiana in the 6-day cycle.
+  // Every day is handled as a UTC midnight timestamp, so time zones and DST cannot shift it.
+  const DAY = 86400000;
+  const REF = Date.UTC(2026, 0, 5);
+  const SHIFTS = {
+    s1: { name: 'I zmiana', hours: '7:00–15:00', start: 7, end: 15 },
+    s2: { name: 'II zmiana', hours: '16:00–24:00', start: 16, end: 24 },
+    off: { name: 'Wolne', hours: '' }
+  };
+  const MONTHS = ['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'];
+  const MONTHS_GEN = ['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'];
+  const WD_LONG = ['poniedziałek', 'wtorek', 'środa', 'czwartek', 'piątek', 'sobota', 'niedziela'];
+  const $ = (id) => document.getElementById(id);
+
+  const localToday = () => { const n = new Date(); return Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()); };
+  const shiftOf = (u) => { const c = ((Math.round((u - REF) / DAY) % 6) + 6) % 6; return c < 2 ? 's1' : c < 4 ? 's2' : 'off'; };
+  const parts = (u) => { const d = new Date(u); return { y: d.getUTCFullYear(), m: d.getUTCMonth(), d: d.getUTCDate(), wd: (d.getUTCDay() + 6) % 7 }; };
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  const pad = (n) => String(n).padStart(2, '0');
+
+  let today = localToday();
+  let selected = today;
+  let view = { y: parts(today).y, m: parts(today).m };
+
+  function fmtDate(u, withWeekday = true) {
+    const p = parts(u);
+    const year = p.y !== parts(today).y ? ` ${p.y}` : '';
+    return `${withWeekday ? WD_LONG[p.wd] + ', ' : ''}${p.d} ${MONTHS_GEN[p.m]}${year}`;
+  }
+  function rel(u) {
+    const k = Math.round((u - today) / DAY);
+    if (k === 0) return 'dziś';
+    if (k === 1) return 'jutro';
+    if (k === -1) return 'wczoraj';
+    return k > 0 ? `za ${k} dni` : `${-k} dni temu`;
+  }
+  function dur(min) {
+    const h = Math.floor(min / 60), m = min % 60;
+    if (!h) return `${m} min`;
+    return m ? `${h} h ${m} min` : `${h} h`;
+  }
+  function findFrom(u, test) { for (let i = 1; i <= 7; i++) { const x = u + i * DAY; if (test(shiftOf(x))) return x; } return null; }
+
+  function renderTop() {
+    const now = new Date();
+    const s = shiftOf(today), S = SHIFTS[s];
+    $('today').className = `today ${s}`;
+    $('todayLbl').textContent = `Dziś · ${fmtDate(today)}`;
+    $('todayVal').textContent = s === 'off' ? 'Wolne' : S.name;
+    $('todayHrs').textContent = S.hours;
+    let status = '';
+    if (s !== 'off') {
+      const mins = now.getHours() * 60 + now.getMinutes();
+      const st = S.start * 60, en = S.end * 60;
+      if (mins < st) status = `Zaczynasz za ${dur(st - mins)}`;
+      else if (mins < en) status = `Trwa · do końca ${dur(en - mins)}`;
+      else status = 'Zmiana zakończona';
+    } else {
+      const back = findFrom(today, (x) => x !== 'off');
+      status = `Do pracy ${rel(back)}: ${SHIFTS[shiftOf(back)].name}`;
+    }
+    $('todayStatus').textContent = status;
+
+    const t = today + DAY, ts = shiftOf(t);
+    $('tmr').className = `mini ${ts}`;
+    $('tmrVal').textContent = SHIFTS[ts].name;
+    $('tmrSub').textContent = ts === 'off' ? cap(WD_LONG[parts(t).wd]) : SHIFTS[ts].hours;
+
+    if (s === 'off') {
+      const w = findFrom(today, (x) => x !== 'off'), ws = shiftOf(w);
+      $('nxt').className = `mini ${ws}`;
+      $('nxtLbl').textContent = 'Następna zmiana';
+      $('nxtVal').textContent = fmtDate(w, false);
+      $('nxtSub').textContent = `${SHIFTS[ws].name} · ${rel(w)}`;
+    } else {
+      const f = findFrom(today, (x) => x === 'off');
+      $('nxt').className = 'mini';
+      $('nxtLbl').textContent = 'Najbliższe wolne';
+      $('nxtVal').textContent = fmtDate(f, false);
+      $('nxtSub').textContent = `${cap(WD_LONG[parts(f).wd])} · ${rel(f)}`;
+    }
+  }
+
+  function renderCal() {
+    $('monthLbl').textContent = `${MONTHS[view.m]} ${view.y}`;
+    const grid = $('grid');
+    grid.replaceChildren();
+    const first = Date.UTC(view.y, view.m, 1);
+    const lead = parts(first).wd;
+    const len = new Date(Date.UTC(view.y, view.m + 1, 0)).getUTCDate();
+    for (let i = 0; i < lead; i++) grid.appendChild(document.createElement('div'));
+    const count = { s1: 0, s2: 0, off: 0 };
+    for (let d = 1; d <= len; d++) {
+      const u = Date.UTC(view.y, view.m, d), s = shiftOf(u);
+      count[s]++;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = `day ${s}${u === today ? ' today' : ''}`;
+      b.textContent = d;
+      b.setAttribute('aria-pressed', String(u === selected));
+      b.setAttribute('aria-label', `${fmtDate(u)}: ${SHIFTS[s].name}`);
+      b.addEventListener('click', () => select(u));
+      grid.appendChild(b);
+    }
+    $('sumTitle').textContent = `${MONTHS[view.m]} ${view.y} w liczbach`;
+    $('cS1').textContent = count.s1;
+    $('cS2').textContent = count.s2;
+    $('cOff').textContent = count.off;
+    $('cHrs').textContent = (count.s1 + count.s2) * 8;
+    $('goToday').hidden = view.y === parts(today).y && view.m === parts(today).m && selected === today;
+  }
+
+  function renderDetail() {
+    const s = shiftOf(selected);
+    $('selDate').textContent = cap(fmtDate(selected));
+    $('selRel').textContent = cap(rel(selected));
+    const badge = $('selBadge');
+    badge.className = `badge ${s}`;
+    badge.textContent = s === 'off' ? 'Wolne' : `${SHIFTS[s].name} · ${SHIFTS[s].hours}`;
+    const p = parts(selected);
+    $('pick').value = `${p.y}-${pad(p.m + 1)}-${pad(p.d)}`;
+  }
+
+  function select(u) {
+    selected = u;
+    const p = parts(u);
+    view = { y: p.y, m: p.m };
+    renderCal();
+    renderDetail();
+  }
+  function shiftMonth(k) {
+    const d = new Date(Date.UTC(view.y, view.m + k, 1));
+    view = { y: d.getUTCFullYear(), m: d.getUTCMonth() };
+    renderCal();
+  }
+
+  $('prev').addEventListener('click', () => shiftMonth(-1));
+  $('next').addEventListener('click', () => shiftMonth(1));
+  $('goToday').addEventListener('click', () => select(today));
+  $('pick').addEventListener('change', (e) => {
+    const [y, m, d] = (e.target.value || '').split('-').map(Number);
+    if (y && m && d) select(Date.UTC(y, m - 1, d));
+  });
+
+  // Swipe left or right on the calendar to change month.
+  let sx = null, sy = null;
+  const grid = $('grid');
+  grid.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+  grid.addEventListener('touchend', (e) => {
+    if (sx === null) return;
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    sx = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) shiftMonth(dx < 0 ? 1 : -1);
+  });
+
+  // Keep "today" correct when the page stays open past midnight or comes back from the background.
+  function tick() {
+    const t = localToday();
+    if (t !== today) {
+      const wasToday = selected === today;
+      today = t;
+      if (wasToday) select(today); else { renderCal(); renderDetail(); }
+    }
+    renderTop();
+  }
+  setInterval(tick, 30000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
+
+  renderTop();
+  renderCal();
+  renderDetail();
+})();
+</script>
